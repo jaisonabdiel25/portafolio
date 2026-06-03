@@ -13,6 +13,7 @@
   --c-bg-to: #f8fafc;
   --c-surface: rgba(255, 255, 255, 0.6);
   --c-surface-strong: rgba(255, 255, 255, 0.82);
+  --c-modal: rgba(255, 255, 255, 0.97);
   --c-border: rgba(15, 23, 42, 0.1);
   --c-fg: #0f172a;
   --c-fg-muted: #475569;
@@ -31,6 +32,7 @@
   --c-bg-to: #020203;
   --c-surface: rgba(255, 255, 255, 0.05);
   --c-surface-strong: rgba(255, 255, 255, 0.09);
+  --c-modal: rgba(20, 20, 28, 0.95);
   --c-border: rgba(255, 255, 255, 0.1);
   --c-fg: #ededef;
   --c-fg-muted: #9aa0ab;
@@ -123,6 +125,33 @@ h1, h2, h3, h4, h5, h6 {
   backdrop-filter: blur(20px) saturate(150%);
   border: 1px solid var(--c-border);
   border-radius: 1rem;
+}
+
+/* Panel del modal de proyecto: fondo sólido (legible, sin transparentar la
+   página) manteniendo el desenfoque del cristal, y scrollbar discreta que
+   solo aparece cuando el contenido excede el alto. */
+@utility modal-panel {
+  background-color: var(--c-modal);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid var(--c-border);
+  scrollbar-width: thin;
+  scrollbar-color: color-mix(in srgb, var(--c-fg) 28%, transparent) transparent;
+}
+.modal-panel::-webkit-scrollbar {
+  width: 9px;
+}
+.modal-panel::-webkit-scrollbar-track {
+  background: transparent;
+}
+.modal-panel::-webkit-scrollbar-thumb {
+  background-color: color-mix(in srgb, var(--c-fg) 28%, transparent);
+  border-radius: 999px;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+.modal-panel::-webkit-scrollbar-thumb:hover {
+  background-color: color-mix(in srgb, var(--c-fg) 45%, transparent);
 }
 
 /* Texto con degradado de acento. */

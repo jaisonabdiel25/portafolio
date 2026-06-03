@@ -210,10 +210,10 @@ export default function ProjectsGrid({ projects, labels }: Props) {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
-            className="dialog-in glass-strong relative z-10 max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl"
+            className="dialog-in modal-panel relative z-10 max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >
-            <ProjectImage project={selected} className="aspect-video rounded-t-2xl" />
+            <ProjectImage project={selected} className="h-44 rounded-t-2xl sm:h-56" />
             <button
               ref={closeRef}
               type="button"

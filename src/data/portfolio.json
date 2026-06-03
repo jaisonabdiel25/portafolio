@@ -173,64 +173,58 @@
   ],
   "projects": [
     {
-      "id": "portfolio",
-      "title": "Portafolio personal",
+      "id": "agendify",
+      "title": "Agendify",
       "description": {
-        "es": "Este mismo sitio: portafolio interactivo bilingüe con glassmorphism, modo claro/oscuro y datos en JSON.",
-        "en": "This very site: an interactive bilingual portfolio with glassmorphism, light/dark mode and JSON-driven data."
+        "es": "Plataforma SaaS multi-tenant para la gestión de negocios de servicios (barberías, salones): reservas, equipo, horarios, clientes y estadísticas.",
+        "en": "Multi-tenant SaaS platform for service businesses (barbershops, salons): bookings, team, schedules, clients and statistics."
       },
       "longDescription": {
-        "es": "Construido con Astro, islas de React y Tailwind CSS. Soporta español e inglés, tema claro/oscuro persistente y animaciones que respetan las preferencias de movimiento del usuario.",
-        "en": "Built with Astro, React islands and Tailwind CSS. Supports Spanish and English, persistent light/dark theme and motion-aware animations."
+        "es": "Plataforma SaaS multi-tenant construida con Next.js 16 (App Router) y React 19 que centraliza la administración de negocios de servicios: reservas, equipo, horarios, clientes y estadísticas. Incluye autenticación con NextAuth v5 mediante sesión JWT con roles (OWNER, ADMIN y STAFF), base de datos PostgreSQL con Prisma 7, UI con shadcn/ui y Recharts, formularios con react-hook-form y Zod, y notificaciones por correo con Resend.",
+        "en": "Multi-tenant SaaS platform built with Next.js 16 (App Router) and React 19 that centralizes the management of service businesses: bookings, team, schedules, clients and statistics. Features NextAuth v5 authentication via JWT sessions with roles (OWNER, ADMIN and STAFF), a PostgreSQL database with Prisma 7, shadcn/ui and Recharts UI, react-hook-form and Zod forms, and email notifications with Resend."
       },
       "category": "web",
-      "tags": ["Astro", "React", "Tailwind"],
-      "image": "/images/project-portfolio.jpg",
-      "repo": "https://github.com/jaisonpalacio/portafolio",
+      "tags": ["Next.js", "Prisma", "SaaS"],
+      "image": "",
+      "repo": "https://github.com/jaisonabdiel25/agendify",
       "demo": "",
       "featured": true
     },
     {
-      "id": "task-app",
-      "title": "Gestor de tareas",
+      "id": "gasoline-app",
+      "title": "Gasoline App",
       "description": {
-        "es": "Aplicación de productividad con tableros, etiquetas y sincronización en tiempo real.",
-        "en": "Productivity app with boards, labels and real-time sync."
+        "es": "Aplicación web full-stack para registrar y analizar los pagos de combustible por vehículo, con historial de recargas y estadísticas de gasto.",
+        "en": "Full-stack web app to log and analyze fuel payments per vehicle, with a refill history and spending statistics."
       },
-      "category": "app",
-      "tags": ["React", "Node.js", "PostgreSQL"],
-      "image": "/images/project-tasks.jpg",
-      "repo": "https://github.com/jaisonpalacio/task-app",
-      "demo": "https://example.com",
+      "longDescription": {
+        "es": "Aplicación construida con Next.js (App Router) que permite gestionar múltiples vehículos por usuario, registrar recargas de combustible y visualizar estadísticas de gasto mensual. Incluye autenticación con NextAuth (credenciales, GitHub y Google), base de datos PostgreSQL con Prisma, componentes de shadcn/ui, gráficas con Recharts y carga de imágenes con Cloudinary.",
+        "en": "Built with Next.js (App Router) to manage multiple vehicles per user, log fuel refills and visualize monthly spending statistics. Features NextAuth authentication (credentials, GitHub and Google), a PostgreSQL database with Prisma, shadcn/ui components, charts with Recharts and image uploads via Cloudinary."
+      },
+      "category": "web",
+      "tags": ["Next.js", "Prisma", "PostgreSQL"],
+      "image": "",
+      "repo": "https://github.com/jaisonabdiel25/gasoline-app",
+      "demo": "",
       "featured": true
     },
     {
-      "id": "weather-api",
-      "title": "API del clima",
+      "id": "object-compare",
+      "title": "Object Compare (JSON Sorter)",
       "description": {
-        "es": "Servicio REST que agrega datos de varias fuentes meteorológicas con caché.",
-        "en": "REST service that aggregates data from several weather sources with caching."
+        "es": "Script en Python que ordena objetos JSON de forma recursiva por el nombre de sus propiedades para normalizar y comparar estructuras.",
+        "en": "Python script that recursively sorts JSON objects by their property names to normalize and compare structures."
       },
-      "category": "api",
-      "tags": ["Node.js", "Express", "REST"],
-      "image": "/images/project-weather.jpg",
-      "repo": "https://github.com/jaisonpalacio/weather-api",
+      "longDescription": {
+        "es": "Herramienta de línea de comandos que ordena alfabéticamente las claves de objetos JSON de forma recursiva, incluyendo objetos anidados y objetos dentro de listas. Útil para normalizar JSON, comparar estructuras o preparar datos antes de enviarlos o guardarlos.",
+        "en": "Command-line tool that alphabetically sorts the keys of JSON objects recursively, including nested objects and objects inside lists. Useful for normalizing JSON, comparing structures or preparing data before sending or saving it."
+      },
+      "category": "tools",
+      "tags": ["Python", "JSON", "CLI"],
+      "image": "",
+      "repo": "https://github.com/jaisonabdiel25/object-compare",
       "demo": "",
-      "featured": false
-    },
-    {
-      "id": "landing-ui",
-      "title": "Landing de producto",
-      "description": {
-        "es": "Página de aterrizaje animada para una startup, optimizada para conversión y velocidad.",
-        "en": "Animated landing page for a startup, optimized for conversion and speed."
-      },
-      "category": "ui",
-      "tags": ["Astro", "Tailwind", "UI"],
-      "image": "/images/project-landing.jpg",
-      "repo": "",
-      "demo": "https://example.com",
-      "featured": false
+      "featured": true
     }
   ],
   "contact": {
