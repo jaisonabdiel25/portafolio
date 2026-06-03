@@ -1,141 +1,250 @@
-/*
-  The CSS in this style tag is based off of Bear Blog's default CSS.
-  https://github.com/HermanMartinus/bearblog/blob/297026a877bc2ab2b3bdfbd6b9f7961c350917dd/templates/styles/blog/default.css
-  License MIT: https://github.com/HermanMartinus/bearblog/blob/master/LICENSE.md
- */
+@import 'tailwindcss';
 
+/* Modo oscuro por clase (.dark en <html>), no por preferencia del sistema. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------ */
+/*  Tokens semánticos por tema                                         */
+/*  Las fuentes (--ff-*) las inyecta la API de fuentes de Astro.       */
+/* ------------------------------------------------------------------ */
 :root {
-	--accent: #2337ff;
-	--accent-dark: #000d8a;
-	--black: 15, 18, 25;
-	--gray: 96, 115, 159;
-	--gray-light: 229, 233, 240;
-	--gray-dark: 34, 41, 57;
-	--gray-gradient: rgba(var(--gray-light), 50%), #fff;
-	--box-shadow:
-		0 2px 6px rgba(var(--gray), 25%), 0 8px 24px rgba(var(--gray), 33%),
-		0 16px 32px rgba(var(--gray), 33%);
-}
-body {
-	font-family: var(--font-atkinson);
-	margin: 0;
-	padding: 0;
-	text-align: left;
-	background: linear-gradient(var(--gray-gradient)) no-repeat;
-	background-size: 100% 600px;
-	word-wrap: break-word;
-	overflow-wrap: break-word;
-	color: rgb(var(--gray-dark));
-	font-size: 20px;
-	line-height: 1.7;
-}
-main {
-	width: 720px;
-	max-width: calc(100% - 2em);
-	margin: auto;
-	padding: 3em 1em;
-}
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-	margin: 0 0 0.5rem 0;
-	color: rgb(var(--black));
-	line-height: 1.2;
-}
-h1 {
-	font-size: 3.052em;
-}
-h2 {
-	font-size: 2.441em;
-}
-h3 {
-	font-size: 1.953em;
-}
-h4 {
-	font-size: 1.563em;
-}
-h5 {
-	font-size: 1.25em;
-}
-strong,
-b {
-	font-weight: 700;
-}
-a {
-	color: var(--accent);
-}
-a:hover {
-	color: var(--accent);
-}
-p {
-	margin-bottom: 1em;
-}
-.prose p {
-	margin-bottom: 2em;
-}
-textarea {
-	width: 100%;
-	font-size: 16px;
-}
-input {
-	font-size: 16px;
-}
-table {
-	width: 100%;
-}
-img {
-	max-width: 100%;
-	height: auto;
-	border-radius: 8px;
-}
-code {
-	padding: 2px 5px;
-	background-color: rgb(var(--gray-light));
-	border-radius: 2px;
-}
-pre {
-	padding: 1.5em;
-	border-radius: 8px;
-}
-pre > code {
-	all: unset;
-}
-blockquote {
-	border-left: 4px solid var(--accent);
-	padding: 0 0 0 20px;
-	margin: 0;
-	font-size: 1.333em;
-}
-hr {
-	border: none;
-	border-top: 1px solid rgb(var(--gray-light));
-}
-@media (max-width: 720px) {
-	body {
-		font-size: 18px;
-	}
-	main {
-		padding: 1em;
-	}
+  /* Tema CLARO (por defecto en el HTML sin clase) */
+  --c-bg-from: #eef2ff;
+  --c-bg-to: #f8fafc;
+  --c-surface: rgba(255, 255, 255, 0.6);
+  --c-surface-strong: rgba(255, 255, 255, 0.82);
+  --c-border: rgba(15, 23, 42, 0.1);
+  --c-fg: #0f172a;
+  --c-fg-muted: #475569;
+  --c-accent: #4f46e5;
+  --c-accent-text: #4338ca;
+  --c-accent-fg: #ffffff;
+  --c-glow: rgba(79, 70, 229, 0.25);
+  --c-blob-1: rgba(99, 102, 241, 0.35);
+  --c-blob-2: rgba(168, 85, 247, 0.28);
+  --c-blob-3: rgba(56, 189, 248, 0.3);
 }
 
-.sr-only {
-	border: 0;
-	padding: 0;
-	margin: 0;
-	position: absolute !important;
-	height: 1px;
-	width: 1px;
-	overflow: hidden;
-	/* IE6, IE7 - a 0 height clip, off to the bottom right of the visible 1px box */
-	clip: rect(1px 1px 1px 1px);
-	/* maybe deprecated but we need to support legacy browsers */
-	clip: rect(1px, 1px, 1px, 1px);
-	/* modern browsers, clip-path works inwards from each corner */
-	clip-path: inset(50%);
-	/* added line to stop words getting smushed together (as they go onto separate lines and some screen readers do not understand line feeds as a space */
-	white-space: nowrap;
+.dark {
+  /* Tema OSCURO (glassmorphism "Modern Dark Cinema") */
+  --c-bg-from: #0a0a0f;
+  --c-bg-to: #020203;
+  --c-surface: rgba(255, 255, 255, 0.05);
+  --c-surface-strong: rgba(255, 255, 255, 0.09);
+  --c-border: rgba(255, 255, 255, 0.1);
+  --c-fg: #ededef;
+  --c-fg-muted: #9aa0ab;
+  --c-accent: #6e79e0;
+  --c-accent-text: #aab0f2;
+  --c-accent-fg: #ffffff;
+  --c-glow: rgba(94, 106, 210, 0.35);
+  --c-blob-1: rgba(94, 106, 210, 0.3);
+  --c-blob-2: rgba(168, 85, 247, 0.22);
+  --c-blob-3: rgba(34, 197, 94, 0.16);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Mapeo a tokens de Tailwind (utilidades text-*, bg-*, border-*)     */
+/* ------------------------------------------------------------------ */
+@theme inline {
+  --font-display: var(--ff-display), sans-serif;
+  --font-sans: var(--ff-sans), sans-serif;
+  --font-mono: var(--ff-mono), monospace;
+
+  --color-fg: var(--c-fg);
+  --color-muted: var(--c-fg-muted);
+  --color-surface: var(--c-surface);
+  --color-surface-strong: var(--c-surface-strong);
+  --color-edge: var(--c-border);
+  --color-accent: var(--c-accent);
+  --color-accent-text: var(--c-accent-text);
+  --color-accent-fg: var(--c-accent-fg);
+
+  --ease-glass: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* ------------------------------------------------------------------ */
+/*  Base                                                               */
+/* ------------------------------------------------------------------ */
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5.5rem; /* compensa la navbar fija al saltar a anclas */
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  font-family: var(--ff-sans), system-ui, sans-serif;
+  color: var(--c-fg);
+  background:
+    radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb, var(--c-accent) 12%, transparent), transparent),
+    linear-gradient(to bottom, var(--c-bg-from), var(--c-bg-to)) fixed;
+  background-color: var(--c-bg-to);
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  transition: color 0.3s var(--ease-glass), background-color 0.3s var(--ease-glass);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--ff-display), system-ui, sans-serif;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  text-wrap: balance;
+}
+
+::selection {
+  background: var(--c-accent);
+  color: var(--c-accent-fg);
+}
+
+/* Foco visible y accesible en todos los elementos interactivos. */
+:focus-visible {
+  outline: 2px solid var(--c-accent);
+  outline-offset: 3px;
+  border-radius: 4px;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Utilidades de componente reutilizables                            */
+/* ------------------------------------------------------------------ */
+@utility glass {
+  background-color: var(--c-surface);
+  -webkit-backdrop-filter: blur(14px) saturate(140%);
+  backdrop-filter: blur(14px) saturate(140%);
+  border: 1px solid var(--c-border);
+  border-radius: 1rem;
+}
+
+@utility glass-strong {
+  background-color: var(--c-surface-strong);
+  -webkit-backdrop-filter: blur(20px) saturate(150%);
+  backdrop-filter: blur(20px) saturate(150%);
+  border: 1px solid var(--c-border);
+  border-radius: 1rem;
+}
+
+/* Texto con degradado de acento. */
+@utility text-gradient {
+  background-image: linear-gradient(
+    120deg,
+    var(--c-fg) 0%,
+    var(--c-accent-text) 60%,
+    var(--c-accent) 100%
+  );
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+}
+
+/* Glow de acento para botones primarios. */
+@utility btn-glow {
+  box-shadow: 0 10px 34px -10px var(--c-glow);
+}
+
+/* Contenedor de sección con ancho y ritmo verticales consistentes. */
+@utility section-shell {
+  width: 100%;
+  max-width: 72rem;
+  margin-inline: auto;
+  padding-inline: 1.25rem;
+  padding-block: 5rem;
+}
+
+/* ------------------------------------------------------------------ */
+/*  Animaciones                                                        */
+/* ------------------------------------------------------------------ */
+
+/* Revelado al hacer scroll (lo activa un IntersectionObserver global). */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 0.7s var(--ease-glass),
+    transform 0.7s var(--ease-glass);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* Blobs de luz ambiental animados. */
+@keyframes blob-float {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  33% { transform: translate(6%, -8%) scale(1.08); }
+  66% { transform: translate(-5%, 5%) scale(0.95); }
+}
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(64px);
+  animation: blob-float 18s var(--ease-glass) infinite;
+  will-change: transform;
+}
+
+/* Entrada de tarjetas (usada por la grilla de proyectos al filtrar). */
+@keyframes card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.card-in {
+  animation: card-in 0.5s var(--ease-glass) both;
+}
+
+/* Entrada/salida del modal de proyecto. */
+@keyframes overlay-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes dialog-in {
+  from { opacity: 0; transform: translateY(12px) scale(0.97); }
+  to { opacity: 1; transform: none; }
+}
+.overlay-in { animation: overlay-in 0.25s var(--ease-glass) both; }
+.dialog-in { animation: dialog-in 0.3s var(--ease-glass) both; }
+
+/* Barra de habilidad: crece desde 0 hasta su nivel cuando es visible. */
+.skill-bar > span {
+  display: block;
+  height: 100%;
+  width: 0;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, var(--c-accent), color-mix(in srgb, var(--c-accent) 50%, #a855f7));
+  transition: width 1s var(--ease-glass);
+}
+.skill-bar.is-visible > span {
+  width: var(--level, 0%);
+}
+
+/* Respeto de prefers-reduced-motion: sin animaciones, todo visible. */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .skill-bar > span {
+    width: var(--level, 0%);
+  }
+  .blob {
+    animation: none;
+  }
 }

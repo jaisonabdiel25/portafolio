@@ -1,0 +1,30 @@
+---
+import PortfolioLayout from '../layouts/PortfolioLayout.astro';
+import Hero from './sections/Hero.astro';
+import About from './sections/About.astro';
+import Skills from './sections/Skills.astro';
+import Experience from './sections/Experience.astro';
+import Projects from './sections/Projects.astro';
+import Contact from './sections/Contact.astro';
+import { portfolio } from '../data/portfolio';
+import { loc } from '../i18n/utils';
+import type { Lang } from '../types/portfolio';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const { name, role } = portfolio.profile;
+const title = `${name} — ${loc(role, lang)}`;
+const description = loc(portfolio.profile.tagline, lang);
+---
+
+<PortfolioLayout title={title} description={description} lang={lang}>
+  <Hero lang={lang} />
+  <About lang={lang} />
+  <Skills lang={lang} />
+  <Experience lang={lang} />
+  <Projects lang={lang} />
+  <Contact lang={lang} />
+</PortfolioLayout>

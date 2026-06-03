@@ -1,0 +1,122 @@
+---
+import Icon from '../Icon.astro';
+import { portfolio } from '../../data/portfolio';
+import { loc, useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../types/portfolio';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { name, role, tagline, location, socials } = portfolio.profile;
+
+const initials = name
+  .split(' ')
+  .map((w) => w[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+---
+
+<section id="home" class="section-shell flex min-h-[100dvh] items-center !pt-28 !pb-16">
+  <div class="grid w-full items-center gap-10 md:grid-cols-[1.4fr_1fr]">
+    <!-- Texto -->
+    <div>
+      <p
+        class="reveal mb-5 inline-flex items-center gap-2 rounded-full border border-edge bg-surface px-3 py-1.5 font-mono text-xs text-muted"
+        style="--reveal-delay: 0ms;"
+      >
+        <span class="relative flex size-2">
+          <span
+            class="absolute inline-flex size-full animate-ping rounded-full bg-accent opacity-75"
+          ></span>
+          <span class="relative inline-flex size-2 rounded-full bg-accent"></span>
+        </span>
+        <Icon name="map-pin" size={14} />
+        {location}
+      </p>
+
+      <h1
+        class="reveal font-display text-4xl font-bold tracking-tight sm:text-6xl lg:text-7xl"
+        style="--reveal-delay: 80ms;"
+      >
+        <span class="text-fg">{name}</span>
+      </h1>
+
+      <p
+        class="reveal mt-3 font-display text-2xl font-semibold sm:text-3xl"
+        style="--reveal-delay: 160ms;"
+      >
+        <span class="text-gradient">{loc(role, lang)}</span>
+      </p>
+
+      <p
+        class="reveal mt-5 max-w-xl text-base text-muted sm:text-lg"
+        style="--reveal-delay: 240ms;"
+      >
+        {loc(tagline, lang)}
+      </p>
+
+      <!-- CTAs -->
+      <div class="reveal mt-8 flex flex-wrap items-center gap-3" style="--reveal-delay: 320ms;">
+        <a
+          href="#projects"
+          class="btn-glow inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
+        >
+          {t('hero.cta.projects')}
+          <Icon name="arrow-right" size={16} />
+        </a>
+        <a
+          href="#contact"
+          class="glass inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-fg transition-colors hover:bg-surface-strong"
+        >
+          {t('hero.cta.contact')}
+        </a>
+      </div>
+
+      <!-- Redes -->
+      <div class="reveal mt-8 flex items-center gap-2" style="--reveal-delay: 400ms;">
+        {
+          socials.map((social) => (
+            <a
+              href={social.url}
+              target={social.platform === 'email' ? undefined : '_blank'}
+              rel="noopener noreferrer"
+              aria-label={social.label ?? social.platform}
+              class="grid size-10 place-items-center rounded-full border border-edge text-muted transition-colors hover:bg-surface-strong hover:text-fg"
+            >
+              <Icon name={social.platform} size={18} />
+            </a>
+          ))
+        }
+      </div>
+    </div>
+
+    <!-- Avatar / monograma (reemplazable por una foto en /public/images/avatar.jpg) -->
+    <div class="reveal order-first md:order-last" style="--reveal-delay: 200ms;">
+      <div class="relative mx-auto w-fit">
+        <div
+          class="absolute -inset-6 rounded-full bg-[var(--c-glow)] blur-2xl"
+          aria-hidden="true"
+        >
+        </div>
+        <div
+          class="glass-strong relative grid size-44 place-items-center rounded-full sm:size-56 lg:size-64"
+        >
+          <span class="font-display text-6xl font-bold text-gradient sm:text-7xl">{initials}</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Indicador de scroll -->
+  <a
+    href="#about"
+    class="absolute inset-x-0 bottom-6 mx-auto flex w-fit flex-col items-center gap-1 text-muted transition-colors hover:text-fg"
+    aria-label={t('hero.scroll')}
+  >
+    <span class="font-mono text-[0.65rem] uppercase tracking-widest">{t('hero.scroll')}</span>
+    <Icon name="chevron-down" size={18} class="animate-bounce" />
+  </a>
+</section>

@@ -1,5 +1,4 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
-
-export const SITE_TITLE = 'Astro Blog';
-export const SITE_DESCRIPTION = 'Welcome to my website!';
+// Datos globales del sitio. Importa desde cualquier página/componente.
+export const SITE_TITLE = 'Jaison Palacio — Portafolio';
+export const SITE_DESCRIPTION =
+  'Portafolio de Jaison Palacio, desarrollador de software full-stack. Proyectos, habilidades y experiencia.';

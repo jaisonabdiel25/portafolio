@@ -1,0 +1,53 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import Icon from '../Icon.astro';
+import { portfolio } from '../../data/portfolio';
+import { loc, useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../types/portfolio';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const categories = portfolio.skills;
+---
+
+<section id="skills" class="section-shell">
+  <SectionHeading index="02" title={t('section.skills')} subtitle={t('skills.subtitle')} />
+
+  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+    {
+      categories.map((cat, i) => (
+        <div
+          class="reveal glass flex flex-col gap-5 rounded-2xl p-6"
+          style={`--reveal-delay: ${i * 90}ms;`}
+        >
+          <div class="flex items-center gap-3">
+            <span class="grid size-10 place-items-center rounded-xl bg-surface-strong text-accent-text">
+              <Icon name={cat.icon ?? 'sparkles'} size={20} />
+            </span>
+            <h3 class="font-display text-lg font-semibold text-fg">{loc(cat.category, lang)}</h3>
+          </div>
+
+          <ul class="flex flex-col gap-4">
+            {cat.items.map((skill) => (
+              <li>
+                <div class="mb-1.5 flex items-center justify-between text-sm">
+                  <span class="font-medium text-fg">{skill.name}</span>
+                  <span class="font-mono text-xs text-muted">{skill.level}%</span>
+                </div>
+                <div
+                  class="skill-bar h-2 w-full overflow-hidden rounded-full bg-surface-strong"
+                  style={`--level: ${skill.level}%;`}
+                >
+                  <span />
+                </div>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
+    }
+  </div>
+</section>

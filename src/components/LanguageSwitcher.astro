@@ -1,0 +1,19 @@
+---
+// Selector de idioma. Enlaza a la versión equivalente en el otro idioma,
+// preservando la ruta (en este sitio de una página: / <-> /en/).
+import { getLangFromUrl, localizePath } from '../i18n/utils';
+import type { Lang } from '../types/portfolio';
+
+const current = getLangFromUrl(Astro.url);
+const other: Lang = current === 'es' ? 'en' : 'es';
+const href = localizePath(Astro.url.pathname, other);
+---
+
+<a
+  href={href}
+  class="grid h-10 cursor-pointer place-items-center rounded-full border border-edge px-3 font-mono text-sm font-medium uppercase tracking-wide text-fg transition-colors hover:bg-surface-strong"
+  aria-label={current === 'es' ? 'Switch to English' : 'Cambiar a español'}
+  data-astro-prefetch
+>
+  {other}
+</a>

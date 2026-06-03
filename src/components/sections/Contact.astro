@@ -1,0 +1,61 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import Icon from '../Icon.astro';
+import CopyEmail from '../react/CopyEmail.tsx';
+import { portfolio } from '../../data/portfolio';
+import { loc, useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../types/portfolio';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { email, socials } = portfolio.profile;
+const { heading, text } = portfolio.contact;
+---
+
+<section id="contact" class="section-shell">
+  <SectionHeading index="05" title={t('section.contact')} />
+
+  <div class="reveal glass-strong overflow-hidden rounded-3xl p-8 text-center sm:p-12">
+    <h3 class="font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl">
+      <span class="text-gradient">{loc(heading, lang)}</span>
+    </h3>
+    <p class="mx-auto mt-4 max-w-xl text-muted">{loc(text, lang)}</p>
+
+    <!-- Email destacado + acciones -->
+    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+      <a
+        href={`mailto:${email}`}
+        class="btn-glow inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
+      >
+        <Icon name="email" size={18} />
+        {email}
+      </a>
+      <CopyEmail
+        client:visible
+        email={email}
+        copyLabel={t('contact.copy')}
+        copiedLabel={t('contact.copied')}
+      />
+    </div>
+
+    <!-- Redes sociales -->
+    <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+      {
+        socials.map((social) => (
+          <a
+            href={social.url}
+            target={social.platform === 'email' ? undefined : '_blank'}
+            rel="noopener noreferrer"
+            class="group glass flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-surface-strong"
+          >
+            <Icon name={social.platform} size={18} class="text-muted transition-colors group-hover:text-accent-text" />
+            {social.label ?? social.platform}
+          </a>
+        ))
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,39 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import { portfolio } from '../../data/portfolio';
+import { loc, useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../types/portfolio';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+const { paragraphs, highlights } = portfolio.about;
+---
+
+<section id="about" class="section-shell">
+  <SectionHeading index="01" title={t('section.about')} />
+
+  <div class="grid gap-8 md:grid-cols-[1.5fr_1fr]">
+    <!-- Texto -->
+    <div class="reveal space-y-4 text-base leading-relaxed text-muted sm:text-lg">
+      {paragraphs.map((p) => <p>{loc(p, lang)}</p>)}
+    </div>
+
+    <!-- Highlights -->
+    <div class="grid grid-cols-2 gap-4 md:grid-cols-1">
+      {
+        highlights.map((h, i) => (
+          <div
+            class="reveal glass flex flex-col gap-1 rounded-2xl p-5"
+            style={`--reveal-delay: ${i * 90}ms;`}
+          >
+            <span class="font-display text-3xl font-bold text-gradient sm:text-4xl">{h.value}</span>
+            <span class="text-sm text-muted">{loc(h.label, lang)}</span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

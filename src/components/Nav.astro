@@ -1,0 +1,183 @@
+---
+import ThemeToggle from './react/ThemeToggle.tsx';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+import { portfolio } from '../data/portfolio';
+import { useTranslations } from '../i18n/utils';
+import type { Lang } from '../types/portfolio';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// IDs neutrales (iguales en ambos idiomas) para que las anclas funcionen siempre.
+const links = [
+  { id: 'about', label: t('nav.about') },
+  { id: 'skills', label: t('nav.skills') },
+  { id: 'experience', label: t('nav.experience') },
+  { id: 'projects', label: t('nav.projects') },
+  { id: 'contact', label: t('nav.contact') },
+];
+
+const homeHref = lang === 'es' ? '/#home' : '/en/#home';
+const initials = portfolio.profile.name
+  .split(' ')
+  .map((w) => w[0])
+  .join('')
+  .slice(0, 2)
+  .toUpperCase();
+---
+
+<header class="fixed inset-x-0 top-0 z-50">
+  <nav
+    class="glass mx-auto mt-3 flex max-w-6xl items-center justify-between gap-3 rounded-full px-4 py-2 sm:px-5"
+    aria-label="Principal"
+  >
+    <!-- Marca -->
+    <a
+      href={homeHref}
+      class="flex items-center gap-2 font-display text-base font-bold tracking-tight text-fg"
+    >
+      <span
+        class="grid size-9 place-items-center rounded-full bg-accent font-mono text-sm text-accent-fg"
+        >{initials}</span
+      >
+      <span class="hidden sm:inline">{portfolio.profile.name}</span>
+    </a>
+
+    <!-- Enlaces (escritorio) -->
+    <ul class="hidden items-center gap-1 md:flex" id="nav-links">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={`#${link.id}`}
+              data-nav-link={link.id}
+              class="rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-[current=true]:bg-surface-strong aria-[current=true]:text-fg"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+
+    <!-- Controles -->
+    <div class="flex items-center gap-2">
+      <LanguageSwitcher />
+      <ThemeToggle client:load label={t('theme.toggle')} />
+      <!-- Botón de menú móvil -->
+      <button
+        type="button"
+        id="menu-btn"
+        aria-label="Menú"
+        aria-expanded="false"
+        aria-controls="mobile-menu"
+        class="grid size-10 cursor-pointer place-items-center rounded-full border border-edge text-fg transition-colors hover:bg-surface-strong md:hidden"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          data-menu-icon="open"
+        >
+          <line x1="4" x2="20" y1="6" y2="6"></line>
+          <line x1="4" x2="20" y1="12" y2="12"></line>
+          <line x1="4" x2="20" y1="18" y2="18"></line>
+        </svg>
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          aria-hidden="true"
+          data-menu-icon="close"
+          class="hidden"
+        >
+          <path d="M18 6 6 18"></path>
+          <path d="m6 6 12 12"></path>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Menú móvil desplegable -->
+  <div
+    id="mobile-menu"
+    class="glass-strong mx-3 mt-2 hidden overflow-hidden rounded-2xl p-2 md:hidden"
+  >
+    <ul class="flex flex-col">
+      {
+        links.map((link) => (
+          <li>
+            <a
+              href={`#${link.id}`}
+              data-mobile-link
+              class="block rounded-xl px-4 py-3 text-base font-medium text-fg transition-colors hover:bg-surface-strong"
+            >
+              {link.label}
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</header>
+
+<script>
+  // --- Menú móvil: abrir/cerrar ---
+  const btn = document.getElementById('menu-btn');
+  const menu = document.getElementById('mobile-menu');
+  const openIcon = document.querySelector('[data-menu-icon="open"]');
+  const closeIcon = document.querySelector('[data-menu-icon="close"]');
+
+  function setMenu(open: boolean) {
+    if (!menu || !btn) return;
+    menu.classList.toggle('hidden', !open);
+    btn.setAttribute('aria-expanded', String(open));
+    openIcon?.classList.toggle('hidden', open);
+    closeIcon?.classList.toggle('hidden', !open);
+  }
+
+  btn?.addEventListener('click', () => {
+    setMenu(menu?.classList.contains('hidden') ?? true);
+  });
+  document
+    .querySelectorAll('[data-mobile-link]')
+    .forEach((el) => el.addEventListener('click', () => setMenu(false)));
+
+  // --- Resaltado de la sección activa con IntersectionObserver ---
+  const navLinks = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
+  const byId = new Map<string, HTMLAnchorElement>();
+  navLinks.forEach((a) => byId.set(a.dataset.navLink ?? '', a));
+
+  const sections = Array.from(byId.keys())
+    .map((id) => document.getElementById(id))
+    .filter((el): el is HTMLElement => el !== null);
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          navLinks.forEach((a) => a.setAttribute('aria-current', 'false'));
+          byId.get(entry.target.id)?.setAttribute('aria-current', 'true');
+        }
+      });
+    },
+    { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
+  );
+  sections.forEach((s) => observer.observe(s));
+</script>

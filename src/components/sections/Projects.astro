@@ -1,0 +1,43 @@
+---
+import SectionHeading from '../SectionHeading.astro';
+import ProjectsGrid from '../react/ProjectsGrid.tsx';
+import type { ProjectCard } from '../react/ProjectsGrid.tsx';
+import { portfolio } from '../../data/portfolio';
+import { loc, useTranslations } from '../../i18n/utils';
+import type { Lang } from '../../types/portfolio';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = useTranslations(lang);
+
+// Localiza los proyectos en el servidor para que la isla reciba datos planos.
+const projects: ProjectCard[] = portfolio.projects.map((p) => ({
+  id: p.id,
+  title: p.title,
+  description: loc(p.description, lang),
+  longDescription: p.longDescription ? loc(p.longDescription, lang) : undefined,
+  category: p.category,
+  tags: p.tags,
+  image: p.image || undefined,
+  repo: p.repo || undefined,
+  demo: p.demo || undefined,
+  featured: p.featured,
+}));
+
+const labels = {
+  all: t('projects.filter.all'),
+  featured: t('projects.featured'),
+  viewRepo: t('projects.viewRepo'),
+  viewDemo: t('projects.viewDemo'),
+  details: t('projects.details'),
+  close: t('projects.close'),
+  empty: t('projects.empty'),
+};
+---
+
+<section id="projects" class="section-shell">
+  <SectionHeading index="04" title={t('section.projects')} subtitle={t('projects.subtitle')} />
+  <ProjectsGrid client:visible projects={projects} labels={labels} />
+</section>

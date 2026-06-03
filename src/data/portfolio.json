@@ -1,0 +1,186 @@
+{
+  "profile": {
+    "name": "Jaison Palacio",
+    "role": {
+      "es": "Desarrollador de Software Full-Stack",
+      "en": "Full-Stack Software Developer"
+    },
+    "tagline": {
+      "es": "Construyo experiencias web rápidas, accesibles y con buen diseño.",
+      "en": "I build fast, accessible and well-designed web experiences."
+    },
+    "location": "Colombia",
+    "email": "jaisonpalaciodev@gmail.com",
+    "avatar": "/images/avatar.jpg",
+    "resume": {
+      "es": "/cv-jaison-palacio-es.pdf",
+      "en": "/cv-jaison-palacio-en.pdf"
+    },
+    "socials": [
+      { "platform": "github", "url": "https://github.com/jaisonpalacio", "label": "GitHub" },
+      { "platform": "linkedin", "url": "https://www.linkedin.com/in/jaisonpalacio", "label": "LinkedIn" },
+      { "platform": "twitter", "url": "https://twitter.com/jaisonpalacio", "label": "Twitter / X" },
+      { "platform": "email", "url": "mailto:jaisonpalaciodev@gmail.com", "label": "Email" }
+    ]
+  },
+  "about": {
+    "paragraphs": [
+      {
+        "es": "Soy desarrollador de software apasionado por crear productos digitales que sean tan agradables de usar como sólidos por dentro. Me gusta cuidar los detalles: el rendimiento, la accesibilidad y una interfaz que se sienta natural.",
+        "en": "I'm a software developer passionate about crafting digital products that are as pleasant to use as they are solid under the hood. I care about the details: performance, accessibility and an interface that feels natural."
+      },
+      {
+        "es": "Trabajo principalmente en el ecosistema web moderno —JavaScript/TypeScript, frameworks como Astro y React— y disfruto aprendiendo nuevas herramientas para resolver problemas reales.",
+        "en": "I work mainly in the modern web ecosystem —JavaScript/TypeScript, frameworks like Astro and React— and I enjoy learning new tools to solve real-world problems."
+      }
+    ],
+    "highlights": [
+      { "value": "3+", "label": { "es": "Años de experiencia", "en": "Years of experience" } },
+      { "value": "20+", "label": { "es": "Proyectos completados", "en": "Completed projects" } },
+      { "value": "10+", "label": { "es": "Tecnologías", "en": "Technologies" } }
+    ]
+  },
+  "skills": [
+    {
+      "category": { "es": "Frontend", "en": "Frontend" },
+      "icon": "layout",
+      "items": [
+        { "name": "HTML & CSS", "level": 95 },
+        { "name": "JavaScript / TypeScript", "level": 90 },
+        { "name": "React", "level": 88 },
+        { "name": "Astro", "level": 85 },
+        { "name": "Tailwind CSS", "level": 90 }
+      ]
+    },
+    {
+      "category": { "es": "Backend", "en": "Backend" },
+      "icon": "server",
+      "items": [
+        { "name": "Node.js", "level": 82 },
+        { "name": "Express", "level": 78 },
+        { "name": "REST APIs", "level": 85 },
+        { "name": "PostgreSQL", "level": 75 }
+      ]
+    },
+    {
+      "category": { "es": "Herramientas", "en": "Tools" },
+      "icon": "wrench",
+      "items": [
+        { "name": "Git & GitHub", "level": 90 },
+        { "name": "Docker", "level": 70 },
+        { "name": "Figma", "level": 72 },
+        { "name": "Vite", "level": 80 }
+      ]
+    }
+  ],
+  "experience": [
+    {
+      "role": { "es": "Desarrollador Full-Stack", "en": "Full-Stack Developer" },
+      "company": "Empresa / Freelance",
+      "start": "2023",
+      "end": "actual",
+      "type": "work",
+      "description": {
+        "es": "Desarrollo de aplicaciones web a medida, desde el diseño de la interfaz hasta la API y la base de datos. Foco en rendimiento y experiencia de usuario.",
+        "en": "Development of custom web applications, from UI design to API and database. Focused on performance and user experience."
+      },
+      "tags": ["React", "Node.js", "PostgreSQL"]
+    },
+    {
+      "role": { "es": "Desarrollador Frontend", "en": "Frontend Developer" },
+      "company": "Proyecto / Empresa anterior",
+      "start": "2022",
+      "end": "2023",
+      "type": "work",
+      "description": {
+        "es": "Construcción de interfaces responsivas y accesibles, colaborando con diseño para llevar maquetas a producción.",
+        "en": "Built responsive and accessible interfaces, collaborating with design to bring mockups to production."
+      },
+      "tags": ["JavaScript", "React", "CSS"]
+    },
+    {
+      "role": { "es": "Tecnólogo / Ingeniería de Sistemas", "en": "Systems Engineering" },
+      "company": "Universidad / Instituto",
+      "start": "2019",
+      "end": "2022",
+      "type": "education",
+      "description": {
+        "es": "Formación en desarrollo de software, estructuras de datos, bases de datos y fundamentos de ingeniería.",
+        "en": "Training in software development, data structures, databases and engineering fundamentals."
+      },
+      "tags": []
+    }
+  ],
+  "projects": [
+    {
+      "id": "portfolio",
+      "title": "Portafolio personal",
+      "description": {
+        "es": "Este mismo sitio: portafolio interactivo bilingüe con glassmorphism, modo claro/oscuro y datos en JSON.",
+        "en": "This very site: an interactive bilingual portfolio with glassmorphism, light/dark mode and JSON-driven data."
+      },
+      "longDescription": {
+        "es": "Construido con Astro, islas de React y Tailwind CSS. Soporta español e inglés, tema claro/oscuro persistente y animaciones que respetan las preferencias de movimiento del usuario.",
+        "en": "Built with Astro, React islands and Tailwind CSS. Supports Spanish and English, persistent light/dark theme and motion-aware animations."
+      },
+      "category": "web",
+      "tags": ["Astro", "React", "Tailwind"],
+      "image": "/images/project-portfolio.jpg",
+      "repo": "https://github.com/jaisonpalacio/portafolio",
+      "demo": "",
+      "featured": true
+    },
+    {
+      "id": "task-app",
+      "title": "Gestor de tareas",
+      "description": {
+        "es": "Aplicación de productividad con tableros, etiquetas y sincronización en tiempo real.",
+        "en": "Productivity app with boards, labels and real-time sync."
+      },
+      "category": "app",
+      "tags": ["React", "Node.js", "PostgreSQL"],
+      "image": "/images/project-tasks.jpg",
+      "repo": "https://github.com/jaisonpalacio/task-app",
+      "demo": "https://example.com",
+      "featured": true
+    },
+    {
+      "id": "weather-api",
+      "title": "API del clima",
+      "description": {
+        "es": "Servicio REST que agrega datos de varias fuentes meteorológicas con caché.",
+        "en": "REST service that aggregates data from several weather sources with caching."
+      },
+      "category": "api",
+      "tags": ["Node.js", "Express", "REST"],
+      "image": "/images/project-weather.jpg",
+      "repo": "https://github.com/jaisonpalacio/weather-api",
+      "demo": "",
+      "featured": false
+    },
+    {
+      "id": "landing-ui",
+      "title": "Landing de producto",
+      "description": {
+        "es": "Página de aterrizaje animada para una startup, optimizada para conversión y velocidad.",
+        "en": "Animated landing page for a startup, optimized for conversion and speed."
+      },
+      "category": "ui",
+      "tags": ["Astro", "Tailwind", "UI"],
+      "image": "/images/project-landing.jpg",
+      "repo": "",
+      "demo": "https://example.com",
+      "featured": false
+    }
+  ],
+  "contact": {
+    "heading": {
+      "es": "¿Trabajamos juntos?",
+      "en": "Let's work together"
+    },
+    "text": {
+      "es": "Estoy abierto a nuevas oportunidades y colaboraciones. Escríbeme y te respondo lo antes posible.",
+      "en": "I'm open to new opportunities and collaborations. Drop me a line and I'll get back to you as soon as possible."
+    }
+  }
+}

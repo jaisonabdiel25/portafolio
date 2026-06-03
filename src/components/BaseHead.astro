@@ -1,43 +1,51 @@
 ---
-// Import the global.css file here so that it is included on
-// all pages through the use of the <BaseHead /> component.
+// Metadatos globales y carga de fuentes. Incluido en el <head> a través del layout.
 import '../styles/global.css';
-import type { ImageMetadata } from 'astro';
-import FallbackImage from '../assets/blog-placeholder-1.jpg';
-import { SITE_TITLE } from '../consts';
 import { Font } from 'astro:assets';
+import { SITE_TITLE } from '../consts';
+import { localizePath } from '../i18n/utils';
+import type { Lang } from '../types/portfolio';
 
 interface Props {
-	title: string;
-	description: string;
-	image?: ImageMetadata;
+  title: string;
+  description: string;
+  lang: Lang;
+  /** Ruta absoluta de la imagen para Open Graph (en /public). */
+  image?: string;
 }
 
-const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const { title, description, lang, image = '/images/og.jpg' } = Astro.props;
 
-const { title, description, image = FallbackImage } = Astro.props;
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+const ogImage = new URL(image, Astro.site);
+
+// Alternativas de idioma para SEO (hreflang).
+const esURL = new URL(localizePath(Astro.url.pathname, 'es'), Astro.site);
+const enURL = new URL(localizePath(Astro.url.pathname, 'en'), Astro.site);
 ---
 
-<!-- Global Metadata -->
+<!-- Metadatos globales -->
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <link rel="icon" href="/favicon.ico" />
 <link rel="sitemap" href="/sitemap-index.xml" />
-<link
-	rel="alternate"
-	type="application/rss+xml"
-	title={SITE_TITLE}
-	href={new URL('rss.xml', Astro.site)}
-/>
 <meta name="generator" content={Astro.generator} />
+<meta name="theme-color" content="#0a0a0f" media="(prefers-color-scheme: dark)" />
+<meta name="theme-color" content="#eef2ff" media="(prefers-color-scheme: light)" />
 
-<Font cssVariable="--font-atkinson" preload />
+<!-- Fuentes (Space Grotesk, Inter, JetBrains Mono) vía la API de Astro -->
+<Font cssVariable="--ff-display" preload />
+<Font cssVariable="--ff-sans" preload />
+<Font cssVariable="--ff-mono" />
 
-<!-- Canonical URL -->
+<!-- Canónica + alternativas de idioma -->
 <link rel="canonical" href={canonicalURL} />
+<link rel="alternate" hreflang="es" href={esURL} />
+<link rel="alternate" hreflang="en" href={enURL} />
+<link rel="alternate" hreflang="x-default" href={esURL} />
 
-<!-- Primary Meta Tags -->
+<!-- Meta principales -->
 <title>{title}</title>
 <meta name="title" content={title} />
 <meta name="description" content={description} />
@@ -45,13 +53,15 @@ const { title, description, image = FallbackImage } = Astro.props;
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website" />
 <meta property="og:url" content={Astro.url} />
+<meta property="og:locale" content={lang === 'es' ? 'es_ES' : 'en_US'} />
+<meta property="og:site_name" content={SITE_TITLE} />
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
-<meta property="og:image" content={new URL(image.src, Astro.url)} />
+<meta property="og:image" content={ogImage} />
 
 <!-- Twitter -->
 <meta property="twitter:card" content="summary_large_image" />
 <meta property="twitter:url" content={Astro.url} />
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
-<meta property="twitter:image" content={new URL(image.src, Astro.url)} />
+<meta property="twitter:image" content={ogImage} />
