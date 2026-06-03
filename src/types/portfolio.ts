@@ -25,8 +25,12 @@ export type Highlight = {
 
 export type Skill = {
   name: string;
-  /** Nivel de dominio 0–100 (para la barra animada). */
-  level: number;
+  /** Nivel de dominio 0–100. Determina el tamaño del icono en la nube
+   *  (mayor nivel → icono más grande). */
+  level?: number;
+  /** Slug de simple-icons (p. ej. "react", "nodedotjs"). Si está presente,
+   *  la habilidad se muestra con su logo de marca en la nube de tecnologías. */
+  slug?: string;
 };
 
 export type SkillCategory = {
@@ -39,8 +43,9 @@ export type SkillCategory = {
 export type ExperienceItem = {
   role: Localized;
   company: string;
-  /** Año o fecha de inicio (texto libre, p. ej. "2022"). */
-  start: string;
+  /** Año o fecha de inicio (texto libre, p. ej. "2022"). Opcional: las
+   *  entradas de formación pueden tener solo año de finalización. */
+  start?: string;
   /** Año o fecha de fin, o "actual"/"present". */
   end: string;
   type: 'work' | 'education';

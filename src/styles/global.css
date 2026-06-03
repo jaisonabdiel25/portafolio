@@ -212,17 +212,16 @@ h1, h2, h3, h4, h5, h6 {
 .overlay-in { animation: overlay-in 0.25s var(--ease-glass) both; }
 .dialog-in { animation: dialog-in 0.3s var(--ease-glass) both; }
 
-/* Barra de habilidad: crece desde 0 hasta su nivel cuando es visible. */
-.skill-bar > span {
-  display: block;
-  height: 100%;
-  width: 0;
-  border-radius: 9999px;
-  background: linear-gradient(90deg, var(--c-accent), color-mix(in srgb, var(--c-accent) 50%, #a855f7));
-  transition: width 1s var(--ease-glass);
+/* Iconos flotantes de la nube de habilidades: leve vaivén vertical. La
+   duración y el retraso se varían por icono (vars en línea) para que no
+   floten todos al mismo tiempo. */
+@keyframes tech-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-9px); }
 }
-.skill-bar.is-visible > span {
-  width: var(--level, 0%);
+.tech-float {
+  animation: tech-float var(--float-dur, 6s) ease-in-out infinite;
+  animation-delay: var(--float-delay, 0s);
 }
 
 /* Respeto de prefers-reduced-motion: sin animaciones, todo visible. */
@@ -240,9 +239,6 @@ h1, h2, h3, h4, h5, h6 {
   .reveal {
     opacity: 1;
     transform: none;
-  }
-  .skill-bar > span {
-    width: var(--level, 0%);
   }
   .blob {
     animation: none;

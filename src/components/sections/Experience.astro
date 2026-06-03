@@ -40,7 +40,9 @@ function formatEnd(end: string): string {
             <div class="flex flex-wrap items-center justify-between gap-2">
               <h3 class="font-display text-lg font-semibold text-fg">{loc(item.role, lang)}</h3>
               <span class="rounded-full border border-edge px-3 py-1 font-mono text-xs text-muted">
-                {item.start} — {formatEnd(item.end)}
+                {item.start && item.start !== item.end
+                  ? `${item.start} — ${formatEnd(item.end)}`
+                  : formatEnd(item.end)}
               </span>
             </div>
 

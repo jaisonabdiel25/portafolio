@@ -40,9 +40,9 @@ const { title, description, lang } = Astro.props;
     </main>
     <Footer lang={lang} />
 
-    {/* Revelado al hacer scroll: añade .is-visible a los elementos .reveal/.skill-bar. */}
+    {/* Revelado al hacer scroll: añade .is-visible a los elementos .reveal. */}
     <script>
-      const animated = document.querySelectorAll('.reveal, .skill-bar');
+      const animated = document.querySelectorAll('.reveal');
       const io = new IntersectionObserver(
         (entries, obs) => {
           entries.forEach((entry) => {

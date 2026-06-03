@@ -1,8 +1,8 @@
 ---
 import SectionHeading from '../SectionHeading.astro';
-import Icon from '../Icon.astro';
 import { portfolio } from '../../data/portfolio';
-import { loc, useTranslations } from '../../i18n/utils';
+import { techIcons } from '../../data/tech-icons';
+import { useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../types/portfolio';
 
 interface Props {
@@ -10,44 +10,84 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const categories = portfolio.skills;
+
+// Color de acento al hover: si el color de marca es muy oscuro (Next.js, GitHub,
+// Express…), usa el acento para que siga siendo visible en modo oscuro.
+function hoverColor(hex: string): string {
+  const r = parseInt(hex.slice(0, 2), 16);
+  const g = parseInt(hex.slice(2, 4), 16);
+  const b = parseInt(hex.slice(4, 6), 16);
+  const lum = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+  return lum < 0.38 ? 'var(--c-accent)' : `#${hex}`;
+}
+
+// Solo las tecnologías con logo real (las que tienen `slug` en techIcons)
+// entran en la nube; las conceptuales del JSON (REST APIs, Clean Architecture…)
+// no tienen slug y se omiten a propósito.
+const all = portfolio.skills
+  .flatMap((c) => c.items)
+  .filter((s) => s.slug && techIcons[s.slug])
+  .map((s) => {
+    const icon = techIcons[s.slug!];
+    return { name: s.name, level: s.level ?? 70, slug: s.slug as string, icon, brand: hoverColor(icon.hex) };
+  });
+type Tech = (typeof all)[number];
+
+const sizes = { principal: 'size-14 sm:size-20', other: 'size-9 sm:size-12' };
+
+// Tecnologías principales (más grandes). El resto, ordenado por nivel.
+const PRINCIPAL = ['nextdotjs', 'dotnet', 'nodedotjs', 'typescript'];
+const bySlug = new Map(all.map((t) => [t.slug, t] as const));
+const principal = PRINCIPAL.map((sl) => bySlug.get(sl)).filter((t): t is Tech => Boolean(t));
+const others = all.filter((t) => !PRINCIPAL.includes(t.slug)).sort((a, b) => b.level - a.level);
+
+// Fila fluida (flex-wrap): se intercalan las principales entre las demás para
+// que los iconos grandes queden esparcidos horizontalmente, no agrupados.
+const queueOthers = [...others];
+const queuePrincipal = [...principal];
+const cloud: (Tech & { size: string })[] = [];
+let count = 0;
+while (queueOthers.length || queuePrincipal.length) {
+  if (queuePrincipal.length && (count % 4 === 3 || queueOthers.length === 0)) {
+    cloud.push({ ...queuePrincipal.shift()!, size: sizes.principal });
+  } else {
+    cloud.push({ ...queueOthers.shift()!, size: sizes.other });
+  }
+  count++;
+}
 ---
 
 <section id="skills" class="section-shell">
   <SectionHeading index="02" title={t('section.skills')} subtitle={t('skills.subtitle')} />
 
-  <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+  <ul class="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-8 gap-y-10 py-6 sm:gap-x-12">
     {
-      categories.map((cat, i) => (
-        <div
-          class="reveal glass flex flex-col gap-5 rounded-2xl p-6"
-          style={`--reveal-delay: ${i * 90}ms;`}
+      cloud.map((tech, i) => (
+        <li
+          class="reveal group relative"
+          style={`--reveal-delay: ${i * 35}ms; --brand: ${tech.brand};`}
         >
-          <div class="flex items-center gap-3">
-            <span class="grid size-10 place-items-center rounded-xl bg-surface-strong text-accent-text">
-              <Icon name={cat.icon ?? 'sparkles'} size={20} />
+          <div
+            class="tech-float relative flex flex-col items-center"
+            style={`--float-dur: ${(4 + (i % 5) * 0.7).toFixed(2)}s; --float-delay: ${((i * 0.37) % 3).toFixed(2)}s;`}
+          >
+            <svg
+              role="img"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+              class={`${tech.size} text-muted transition-all duration-200 group-hover:-translate-y-1 group-hover:text-(--brand)`}
+            >
+              <path d={tech.icon.path} />
+            </svg>
+            <span
+              class="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-surface-strong px-2 py-0.5 text-xs font-medium text-fg opacity-0 transition-opacity group-hover:opacity-100"
+            >
+              {tech.name}
             </span>
-            <h3 class="font-display text-lg font-semibold text-fg">{loc(cat.category, lang)}</h3>
           </div>
-
-          <ul class="flex flex-col gap-4">
-            {cat.items.map((skill) => (
-              <li>
-                <div class="mb-1.5 flex items-center justify-between text-sm">
-                  <span class="font-medium text-fg">{skill.name}</span>
-                  <span class="font-mono text-xs text-muted">{skill.level}%</span>
-                </div>
-                <div
-                  class="skill-bar h-2 w-full overflow-hidden rounded-full bg-surface-strong"
-                  style={`--level: ${skill.level}%;`}
-                >
-                  <span />
-                </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+        </li>
       ))
     }
-  </div>
+  </ul>
 </section>
