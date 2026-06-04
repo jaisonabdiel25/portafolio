@@ -18,6 +18,7 @@ export const ui = {
 
     'hero.cta.projects': 'Ver proyectos',
     'hero.cta.contact': 'Contáctame',
+    'cta.resume': 'Descargar CV',
     'hero.scroll': 'Desplázate',
 
     'section.about': 'Sobre mí',
@@ -60,6 +61,7 @@ export const ui = {
 
     'hero.cta.projects': 'View projects',
     'hero.cta.contact': 'Get in touch',
+    'cta.resume': 'Download CV',
     'hero.scroll': 'Scroll',
 
     'section.about': 'About me',

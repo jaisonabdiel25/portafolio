@@ -9,7 +9,8 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const { name, role, tagline, location, socials } = portfolio.profile;
+const { name, role, tagline, location, socials, resume } = portfolio.profile;
+const resumeUrl = resume?.[lang];
 
 const initials = name
   .split(' ')
@@ -73,6 +74,19 @@ const initials = name
         >
           {t('hero.cta.contact')}
         </a>
+        {
+          resumeUrl && (
+            <a
+              href={resumeUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              class="glass inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-fg transition-colors hover:bg-surface-strong"
+            >
+              <Icon name="download" size={16} />
+              {t('cta.resume')}
+            </a>
+          )
+        }
       </div>
 
       <!-- Redes -->

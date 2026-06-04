@@ -11,8 +11,9 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const { email, socials } = portfolio.profile;
+const { email, socials, resume } = portfolio.profile;
 const { heading, text } = portfolio.contact;
+const resumeUrl = resume?.[lang];
 ---
 
 <section id="contact" class="section-shell">
@@ -39,6 +40,19 @@ const { heading, text } = portfolio.contact;
         copyLabel={t('contact.copy')}
         copiedLabel={t('contact.copied')}
       />
+      {
+        resumeUrl && (
+          <a
+            href={resumeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="glass inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-fg transition-colors hover:bg-surface-strong"
+          >
+            <Icon name="download" size={18} />
+            {t('cta.resume')}
+          </a>
+        )
+      }
     </div>
 
     <!-- Redes sociales -->
