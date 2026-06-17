@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://jaisonpalacio.dev/sitemap-index.xml

@@ -1,8 +1,9 @@
 ---
 import SectionHeading from '../SectionHeading.astro';
+import Icon from '../Icon.astro';
 import { portfolio } from '../../data/portfolio';
 import { techIcons } from '../../data/tech-icons';
-import { useTranslations } from '../../i18n/utils';
+import { loc, useTranslations } from '../../i18n/utils';
 import type { Lang } from '../../types/portfolio';
 
 interface Props {
@@ -10,6 +11,10 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
+
+// Categorías completas para la vista de lista (incluye las habilidades
+// conceptuales sin logo, p. ej. REST APIs o Clean Architecture).
+const categories = portfolio.skills;
 
 // Color de acento al hover: si el color de marca es muy oscuro (Next.js, GitHub,
 // Express…), usa el acento para que siga siendo visible en modo oscuro.
@@ -60,34 +65,126 @@ while (queueOthers.length || queuePrincipal.length) {
 <section id="skills" class="section-shell">
   <SectionHeading index="02" title={t('section.skills')} subtitle={t('skills.subtitle')} />
 
-  <ul class="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-8 gap-y-10 py-6 sm:gap-x-12">
-    {
-      cloud.map((tech, i) => (
-        <li
-          class="reveal group relative"
-          style={`--reveal-delay: ${i * 35}ms; --brand: ${tech.brand};`}
-        >
-          <div
-            class="tech-float relative flex flex-col items-center"
-            style={`--float-dur: ${(4 + (i % 5) * 0.7).toFixed(2)}s; --float-delay: ${((i * 0.37) % 3).toFixed(2)}s;`}
+  <!-- Pestañas: nube de iconos vs. lista detallada -->
+  <div class="mb-10 flex justify-center">
+    <div role="tablist" aria-label={t('section.skills')} class="glass inline-flex gap-1 rounded-full p-1">
+      <button
+        type="button"
+        role="tab"
+        id="skills-tab-icons"
+        data-tab="icons"
+        aria-selected="true"
+        aria-controls="skills-panel-icons"
+        class="skills-tab inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-selected:bg-accent aria-selected:text-accent-fg"
+      >
+        <Icon name="grid" size={16} />
+        {t('skills.tab.icons')}
+      </button>
+      <button
+        type="button"
+        role="tab"
+        id="skills-tab-list"
+        data-tab="list"
+        aria-selected="false"
+        aria-controls="skills-panel-list"
+        class="skills-tab inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-selected:bg-accent aria-selected:text-accent-fg"
+      >
+        <Icon name="list" size={16} />
+        {t('skills.tab.list')}
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel: nube de iconos -->
+  <div id="skills-panel-icons" role="tabpanel" aria-labelledby="skills-tab-icons">
+    <ul class="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-8 gap-y-10 py-6 sm:gap-x-12">
+      {
+        cloud.map((tech, i) => (
+          <li
+            class="reveal group relative"
+            style={`--reveal-delay: ${i * 35}ms; --brand: ${tech.brand};`}
           >
-            <svg
-              role="img"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              aria-hidden="true"
-              class={`${tech.size} text-muted transition-all duration-200 group-hover:-translate-y-1 group-hover:text-(--brand)`}
+            <div
+              class="tech-float relative flex flex-col items-center"
+              style={`--float-dur: ${(4 + (i % 5) * 0.7).toFixed(2)}s; --float-delay: ${((i * 0.37) % 3).toFixed(2)}s;`}
             >
-              <path d={tech.icon.path} />
-            </svg>
-            <span
-              class="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-surface-strong px-2 py-0.5 text-xs font-medium text-fg opacity-0 transition-opacity group-hover:opacity-100"
-            >
-              {tech.name}
-            </span>
+              <svg
+                role="img"
+                viewBox="0 0 24 24"
+                fill="currentColor"
+                aria-hidden="true"
+                class={`${tech.size} text-muted transition-all duration-200 group-hover:-translate-y-1 group-hover:text-(--brand)`}
+              >
+                <path d={tech.icon.path} />
+              </svg>
+              <span
+                class="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-surface-strong px-2 py-0.5 text-xs font-medium text-fg opacity-0 transition-opacity group-hover:opacity-100"
+              >
+                {tech.name}
+              </span>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+
+  <!-- Panel: lista detallada por categoría -->
+  <div id="skills-panel-list" role="tabpanel" aria-labelledby="skills-tab-list" hidden>
+    <div class="grid gap-6 sm:grid-cols-2">
+      {
+        categories.map((cat) => (
+          <div class="glass rounded-2xl p-6">
+            <h3 class="mb-5 flex items-center gap-2 font-display text-lg font-semibold text-fg">
+              <Icon name={cat.icon ?? 'sparkles'} size={20} class="text-accent-text" />
+              {loc(cat.category, lang)}
+            </h3>
+            <ul class="flex flex-wrap gap-2">
+              {cat.items.map((item) => {
+                const icon = item.slug ? techIcons[item.slug] : undefined;
+                return (
+                  <li
+                    class="skill-chip group inline-flex items-center gap-2 rounded-full border border-edge bg-surface-strong px-3 py-1.5 text-sm font-medium text-fg transition-colors hover:border-accent"
+                    style={icon ? `--brand: ${hoverColor(icon.hex)};` : undefined}
+                  >
+                    {icon && (
+                      <svg
+                        role="img"
+                        viewBox="0 0 24 24"
+                        fill="currentColor"
+                        aria-hidden="true"
+                        class="size-4 text-muted transition-colors group-hover:text-(--brand)"
+                      >
+                        <path d={icon.path} />
+                      </svg>
+                    )}
+                    {item.name}
+                  </li>
+                );
+              })}
+            </ul>
           </div>
-        </li>
-      ))
-    }
-  </ul>
+        ))
+      }
+    </div>
+  </div>
 </section>
+
+<script>
+  // Pestañas de la sección Habilidades: alterna entre la nube de iconos y la
+  // lista detallada (mismo patrón ligero que el menú móvil del header).
+  const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.skills-tab'));
+  const panels: Record<string, HTMLElement | null> = {
+    icons: document.getElementById('skills-panel-icons'),
+    list: document.getElementById('skills-panel-list'),
+  };
+
+  function selectTab(key: string) {
+    tabs.forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.tab === key)));
+    Object.entries(panels).forEach(([k, panel]) => panel && (panel.hidden = k !== key));
+  }
+
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', () => selectTab(tab.dataset.tab ?? 'icons'));
+  });
+</script>

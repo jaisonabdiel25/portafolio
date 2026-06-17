@@ -28,6 +28,8 @@ export const ui = {
     'section.contact': 'Contacto',
 
     'skills.subtitle': 'Tecnologías y herramientas con las que trabajo',
+    'skills.tab.icons': 'Iconos',
+    'skills.tab.list': 'Lista',
 
     'experience.now': 'Actual',
     'experience.type.work': 'Trabajo',
@@ -71,6 +73,8 @@ export const ui = {
     'section.contact': 'Contact',
 
     'skills.subtitle': 'Technologies and tools I work with',
+    'skills.tab.icons': 'Icons',
+    'skills.tab.list': 'List',
 
     'experience.now': 'Present',
     'experience.type.work': 'Work',

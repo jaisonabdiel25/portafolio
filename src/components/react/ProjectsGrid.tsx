@@ -76,6 +76,7 @@ export default function ProjectsGrid({ projects, labels }: Props) {
   const [active, setActive] = useState('all');
   const [selected, setSelected] = useState<ProjectCard | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   // Categorías únicas, en orden de aparición.
   const categories = useMemo(() => {
@@ -96,7 +97,26 @@ export default function ProjectsGrid({ projects, labels }: Props) {
     document.body.style.overflow = 'hidden';
     closeRef.current?.focus();
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === 'Escape') setSelected(null);
+      if (e.key === 'Escape') {
+        setSelected(null);
+        return;
+      }
+      // Atrapa el foco dentro del diálogo (Tab/Shift+Tab hacen ciclo).
+      if (e.key === 'Tab') {
+        const focusables = dialogRef.current?.querySelectorAll<HTMLElement>(
+          'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])'
+        );
+        if (!focusables || focusables.length === 0) return;
+        const first = focusables[0];
+        const last = focusables[focusables.length - 1];
+        if (e.shiftKey && document.activeElement === first) {
+          e.preventDefault();
+          last.focus();
+        } else if (!e.shiftKey && document.activeElement === last) {
+          e.preventDefault();
+          first.focus();
+        }
+      }
     };
     document.addEventListener('keydown', onKey);
     return () => {
@@ -210,6 +230,7 @@ export default function ProjectsGrid({ projects, labels }: Props) {
         >
           <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
           <div
+            ref={dialogRef}
             className="dialog-in modal-panel relative z-10 max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl"
             onClick={(e) => e.stopPropagation()}
           >

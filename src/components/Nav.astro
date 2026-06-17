@@ -1,5 +1,6 @@
 ---
 import ThemeToggle from './react/ThemeToggle.tsx';
+import TubelightNav from './react/TubelightNav.tsx';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { portfolio } from '../data/portfolio';
 import { useTranslations } from '../i18n/utils';
@@ -46,22 +47,9 @@ const initials = portfolio.profile.name
       <span class="hidden sm:inline">{portfolio.profile.name}</span>
     </a>
 
-    <!-- Enlaces (escritorio) -->
-    <ul class="hidden items-center gap-1 md:flex" id="nav-links">
-      {
-        links.map((link) => (
-          <li>
-            <a
-              href={`#${link.id}`}
-              data-nav-link={link.id}
-              class="rounded-full px-3 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-[current=true]:bg-surface-strong aria-[current=true]:text-fg"
-            >
-              {link.label}
-            </a>
-          </li>
-        ))
-      }
-    </ul>
+    <!-- Enlaces (escritorio) con efecto tubelight: la isla resuelve por sí
+         misma la sección activa por scroll y anima la lámpara. -->
+    <TubelightNav client:load links={links} />
 
     <!-- Controles -->
     <div class="flex items-center gap-2">
@@ -159,25 +147,6 @@ const initials = portfolio.profile.name
     .querySelectorAll('[data-mobile-link]')
     .forEach((el) => el.addEventListener('click', () => setMenu(false)));
 
-  // --- Resaltado de la sección activa con IntersectionObserver ---
-  const navLinks = document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]');
-  const byId = new Map<string, HTMLAnchorElement>();
-  navLinks.forEach((a) => byId.set(a.dataset.navLink ?? '', a));
-
-  const sections = Array.from(byId.keys())
-    .map((id) => document.getElementById(id))
-    .filter((el): el is HTMLElement => el !== null);
-
-  const observer = new IntersectionObserver(
-    (entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          navLinks.forEach((a) => a.setAttribute('aria-current', 'false'));
-          byId.get(entry.target.id)?.setAttribute('aria-current', 'true');
-        }
-      });
-    },
-    { rootMargin: '-45% 0px -50% 0px', threshold: 0 }
-  );
-  sections.forEach((s) => observer.observe(s));
+  // El resaltado de la sección activa (escritorio) lo gestiona la isla
+  // TubelightNav con su propio IntersectionObserver.
 </script>
