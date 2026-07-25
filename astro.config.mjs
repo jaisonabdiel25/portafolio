@@ -1,7 +1,7 @@
 // @ts-check
 
 import sitemap from '@astrojs/sitemap';
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig, envField, fontProviders } from 'astro/config';
 
 import react from '@astrojs/react';
 import tailwindcss from '@tailwindcss/vite';
@@ -16,6 +16,18 @@ export default defineConfig({
     locales: ['es', 'en'],
     routing: {
       prefixDefaultLocale: false,
+    },
+  },
+
+  // Datos del portafolio: se leen desde MongoDB en tiempo de build.
+  env: {
+    schema: {
+      MONGODB_URI: envField.string({ context: 'server', access: 'secret' }),
+      MONGODB_DB: envField.string({
+        context: 'server',
+        access: 'secret',
+        default: 'portfolio',
+      }),
     },
   },
 
