@@ -1,5 +1,4 @@
 ---
-import SectionHeading from '../SectionHeading.astro';
 import Icon from '../Icon.astro';
 import CopyEmail from '../react/CopyEmail.tsx';
 import { portfolio } from '../../data/portfolio';
@@ -16,23 +15,34 @@ const { heading, text } = portfolio.contact;
 const resumeUrl = resume?.[lang];
 ---
 
-<section id="contact" class="section-shell">
-  <SectionHeading index="05" title={t('section.contact')} />
+<!-- Sin cabecera de sección y sin panel contenedor: la frase de cierre ES la
+     cabecera. El bloque va centrado, pero sin la tarjeta de cristal que lo
+     envolvía (y que anidaba botones y píldoras dentro de otra caja). -->
+<section id="contact" class="section-shell" style="--pad-block: 4rem 5rem;">
+  <div class="mx-auto max-w-2xl text-center">
+    <h2 class="font-display text-3xl font-bold tracking-tight text-fg sm:text-5xl">
+      {loc(heading, lang)}
+    </h2>
+    <p class="mt-5 text-base text-muted sm:text-lg">{loc(text, lang)}</p>
 
-  <div class="reveal glass-strong overflow-hidden rounded-3xl p-8 text-center sm:p-12">
-    <h3 class="font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl">
-      <span class="text-gradient">{loc(heading, lang)}</span>
-    </h3>
-    <p class="mx-auto mt-4 max-w-xl text-muted">{loc(text, lang)}</p>
-
-    <!-- Email destacado + acciones -->
-    <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+    <!-- El email va como texto seleccionable, no como etiqueta del botón: a
+         375px una dirección completa partía el CTA en dos líneas. -->
+    <p class="mt-8">
       <a
         href={`mailto:${email}`}
-        class="btn-glow inline-flex items-center gap-2 rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
+        class="font-mono text-base wrap-break-word text-accent-text underline-offset-4 hover:underline sm:text-lg"
+      >
+        {email}
+      </a>
+    </p>
+
+    <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+      <a
+        href={`mailto:${email}`}
+        class="btn-glow inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-accent px-5 py-3 text-sm font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
       >
         <Icon name="email" size={18} />
-        {email}
+        {t('contact.write')}
       </a>
       <CopyEmail
         client:visible
@@ -46,7 +56,7 @@ const resumeUrl = resume?.[lang];
             href={resumeUrl}
             target="_blank"
             rel="noopener noreferrer"
-            class="glass inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-semibold text-fg transition-colors hover:bg-surface-strong"
+            class="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-edge px-5 py-3 text-sm font-semibold text-fg transition-colors hover:bg-panel-hover"
           >
             <Icon name="download" size={18} />
             {t('cta.resume')}
@@ -56,20 +66,26 @@ const resumeUrl = resume?.[lang];
     </div>
 
     <!-- Redes sociales -->
-    <div class="mt-10 flex flex-wrap items-center justify-center gap-3">
+    <ul class="mt-10 flex flex-wrap items-center justify-center gap-3">
       {
         socials.map((social) => (
-          <a
-            href={social.url}
-            target={social.platform === 'email' ? undefined : '_blank'}
-            rel="noopener noreferrer"
-            class="group glass flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-surface-strong"
-          >
-            <Icon name={social.platform} size={18} class="text-muted transition-colors group-hover:text-accent-text" />
-            {social.label ?? social.platform}
-          </a>
+          <li>
+            <a
+              href={social.url}
+              target={social.platform === 'email' ? undefined : '_blank'}
+              rel="noopener noreferrer"
+              class="group inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-edge px-4 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-panel-hover"
+            >
+              <Icon
+                name={social.platform}
+                size={18}
+                class="text-muted transition-colors group-hover:text-accent-text"
+              />
+              {social.label ?? social.platform}
+            </a>
+          </li>
         ))
       }
-    </div>
+    </ul>
   </div>
 </section>

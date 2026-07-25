@@ -1,8 +1,8 @@
 ---
 import BaseHead from '../components/BaseHead.astro';
-import Background from '../components/Background.astro';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import { useTranslations } from '../i18n/utils';
 import type { Lang } from '../types/portfolio';
 
 interface Props {
@@ -11,50 +11,22 @@ interface Props {
   lang: Lang;
 }
 const { title, description, lang } = Astro.props;
+const t = useTranslations(lang);
 ---
 
 <!doctype html>
 <html lang={lang}>
   <head>
     <BaseHead title={title} description={description} lang={lang} />
-    {/* Script anti-FOUC: aplica el tema antes de pintar para evitar parpadeos. */}
-    <script is:inline>
-      (() => {
-        try {
-          const stored = localStorage.getItem('theme');
-          const prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
-          // Por defecto: oscuro, salvo que el usuario o el sistema prefieran claro.
-          const dark = stored ? stored === 'dark' : !prefersLight;
-          document.documentElement.classList.toggle('dark', dark);
-        } catch {
-          document.documentElement.classList.add('dark');
-        }
-      })();
-    </script>
+    {/* Sin script anti-FOUC: el sitio tiene un único tema (oscuro), así que
+        no hay nada que resolver antes de pintar. */}
   </head>
   <body>
-    <Background />
+    <a class="skip-link" href="#main">{t('a11y.skip')}</a>
     <Nav lang={lang} />
     <main id="main">
       <slot />
     </main>
     <Footer lang={lang} />
-
-    {/* Revelado al hacer scroll: añade .is-visible a los elementos .reveal. */}
-    <script>
-      const animated = document.querySelectorAll('.reveal');
-      const io = new IntersectionObserver(
-        (entries, obs) => {
-          entries.forEach((entry) => {
-            if (entry.isIntersecting) {
-              entry.target.classList.add('is-visible');
-              obs.unobserve(entry.target);
-            }
-          });
-        },
-        { threshold: 0.15, rootMargin: '0px 0px -10% 0px' }
-      );
-      animated.forEach((el) => io.observe(el));
-    </script>
   </body>
 </html>

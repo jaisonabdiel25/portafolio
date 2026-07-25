@@ -38,7 +38,7 @@ const all = portfolio.skills
   });
 type Tech = (typeof all)[number];
 
-const sizes = { principal: 'size-14 sm:size-20', other: 'size-9 sm:size-12' };
+const sizes = { principal: 'size-12 sm:size-16', other: 'size-8 sm:size-10' };
 
 // Tecnologías principales (más grandes). El resto, ordenado por nivel.
 const PRINCIPAL = ['nextdotjs', 'dotnet', 'nodedotjs', 'typescript'];
@@ -62,12 +62,17 @@ while (queueOthers.length || queuePrincipal.length) {
 }
 ---
 
-<section id="skills" class="section-shell">
-  <SectionHeading index="02" title={t('section.skills')} subtitle={t('skills.subtitle')} />
+<section id="skills" class="section-shell" style="--pad-block: 3.5rem 5rem;">
+  <SectionHeading title={t('section.skills')} subtitle={t('skills.subtitle')} />
 
-  <!-- Pestañas: nube de iconos vs. lista detallada -->
+  <!-- Pestañas: nube de iconos vs. lista detallada. Centradas para alinear
+       con la nube de iconos, que también lo está. -->
   <div class="mb-10 flex justify-center">
-    <div role="tablist" aria-label={t('section.skills')} class="glass inline-flex gap-1 rounded-full p-1">
+    <div
+      role="tablist"
+      aria-label={t('section.skills')}
+      class="inline-flex gap-1 rounded-full border border-edge bg-panel p-1"
+    >
       <button
         type="button"
         role="tab"
@@ -75,7 +80,8 @@ while (queueOthers.length || queuePrincipal.length) {
         data-tab="icons"
         aria-selected="true"
         aria-controls="skills-panel-icons"
-        class="skills-tab inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-selected:bg-accent aria-selected:text-accent-fg"
+        tabindex="0"
+        class="skills-tab inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-selected:bg-accent aria-selected:text-accent-fg"
       >
         <Icon name="grid" size={16} />
         {t('skills.tab.icons')}
@@ -87,7 +93,8 @@ while (queueOthers.length || queuePrincipal.length) {
         data-tab="list"
         aria-selected="false"
         aria-controls="skills-panel-list"
-        class="skills-tab inline-flex cursor-pointer items-center gap-2 rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-selected:bg-accent aria-selected:text-accent-fg"
+        tabindex="-1"
+        class="skills-tab inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-medium text-muted transition-colors hover:text-fg aria-selected:bg-accent aria-selected:text-accent-fg"
       >
         <Icon name="list" size={16} />
         {t('skills.tab.list')}
@@ -95,70 +102,75 @@ while (queueOthers.length || queuePrincipal.length) {
     </div>
   </div>
 
-  <!-- Panel: nube de iconos -->
-  <div id="skills-panel-icons" role="tabpanel" aria-labelledby="skills-tab-icons">
-    <ul class="mx-auto flex max-w-4xl flex-wrap items-center justify-center gap-x-8 gap-y-10 py-6 sm:gap-x-12">
+  <!-- Panel: nube de iconos. El nombre va SIEMPRE visible: era la
+       información, no un extra que se revelaba al pasar el ratón (y que en
+       móvil y con teclado no aparecía nunca). -->
+  <div id="skills-panel-icons" role="tabpanel" aria-labelledby="skills-tab-icons" tabindex="0">
+    <ul class="flex flex-wrap items-end justify-center gap-x-8 gap-y-8 py-4 sm:gap-x-12">
       {
-        cloud.map((tech, i) => (
-          <li
-            class="reveal group relative"
-            style={`--reveal-delay: ${i * 35}ms; --brand: ${tech.brand};`}
-          >
-            <div
-              class="tech-float relative flex flex-col items-center"
-              style={`--float-dur: ${(4 + (i % 5) * 0.7).toFixed(2)}s; --float-delay: ${((i * 0.37) % 3).toFixed(2)}s;`}
+        cloud.map((tech) => (
+          <li class="group flex w-16 flex-col items-center gap-2 sm:w-20" style={`--brand: ${tech.brand};`}>
+            <svg
+              viewBox="0 0 24 24"
+              fill="currentColor"
+              aria-hidden="true"
+              class={`${tech.size} text-muted transition-[color,transform] duration-200 group-hover:-translate-y-1 group-hover:text-(--brand)`}
             >
-              <svg
-                role="img"
-                viewBox="0 0 24 24"
-                fill="currentColor"
-                aria-hidden="true"
-                class={`${tech.size} text-muted transition-all duration-200 group-hover:-translate-y-1 group-hover:text-(--brand)`}
-              >
-                <path d={tech.icon.path} />
-              </svg>
-              <span
-                class="pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-surface-strong px-2 py-0.5 text-xs font-medium text-fg opacity-0 transition-opacity group-hover:opacity-100"
-              >
-                {tech.name}
-              </span>
-            </div>
+              <path d={tech.icon.path} />
+            </svg>
+            <span class="text-center text-xs font-medium text-muted">{tech.name}</span>
           </li>
         ))
       }
     </ul>
   </div>
 
-  <!-- Panel: lista detallada por categoría -->
-  <div id="skills-panel-list" role="tabpanel" aria-labelledby="skills-tab-list" hidden>
+  <!-- Panel: lista detallada por categoría, con el nivel de dominio (el dato
+       `level` existía en los datos y no se mostraba en ninguna vista). -->
+  <div id="skills-panel-list" role="tabpanel" aria-labelledby="skills-tab-list" tabindex="0" hidden>
     <div class="grid gap-6 sm:grid-cols-2">
       {
         categories.map((cat) => (
-          <div class="glass rounded-2xl p-6">
+          <div class="panel p-6">
             <h3 class="mb-5 flex items-center gap-2 font-display text-lg font-semibold text-fg">
               <Icon name={cat.icon ?? 'sparkles'} size={20} class="text-accent-text" />
               {loc(cat.category, lang)}
             </h3>
-            <ul class="flex flex-wrap gap-2">
+            <ul class="flex flex-col gap-3">
               {cat.items.map((item) => {
                 const icon = item.slug ? techIcons[item.slug] : undefined;
                 return (
-                  <li
-                    class="skill-chip group inline-flex items-center gap-2 rounded-full border border-edge bg-surface-strong px-3 py-1.5 text-sm font-medium text-fg transition-colors hover:border-accent"
-                    style={icon ? `--brand: ${hoverColor(icon.hex)};` : undefined}
-                  >
-                    {icon && (
+                  <li class="flex items-center gap-3">
+                    {icon ? (
                       <svg
-                        role="img"
                         viewBox="0 0 24 24"
                         fill="currentColor"
                         aria-hidden="true"
-                        class="size-4 text-muted transition-colors group-hover:text-(--brand)"
+                        class="size-4 shrink-0 text-muted"
                       >
                         <path d={icon.path} />
                       </svg>
+                    ) : (
+                      <span class="size-4 shrink-0" aria-hidden="true" />
                     )}
-                    {item.name}
+                    <span class="min-w-0 flex-1 truncate text-sm font-medium text-fg">
+                      {item.name}
+                    </span>
+                    {typeof item.level === 'number' && (
+                      <span
+                        role="meter"
+                        aria-valuenow={item.level}
+                        aria-valuemin={0}
+                        aria-valuemax={100}
+                        aria-label={`${t('skills.level')}: ${item.name}`}
+                        class="h-1 w-16 shrink-0 overflow-hidden rounded-full bg-edge sm:w-20"
+                      >
+                        <span
+                          class="block h-full rounded-full bg-accent"
+                          style={`width: ${item.level}%;`}
+                        />
+                      </span>
+                    )}
                   </li>
                 );
               })}
@@ -171,20 +183,40 @@ while (queueOthers.length || queuePrincipal.length) {
 </section>
 
 <script>
-  // Pestañas de la sección Habilidades: alterna entre la nube de iconos y la
-  // lista detallada (mismo patrón ligero que el menú móvil del header).
+  // Patrón WAI-ARIA de pestañas COMPLETO: si el marcado promete role="tab",
+  // debe entregar flechas ←/→, Home/End y tabindex móvil (solo la pestaña
+  // activa es tabulable). Media implementación de ARIA es peor que ninguna.
   const tabs = Array.from(document.querySelectorAll<HTMLButtonElement>('.skills-tab'));
   const panels: Record<string, HTMLElement | null> = {
     icons: document.getElementById('skills-panel-icons'),
     list: document.getElementById('skills-panel-list'),
   };
 
-  function selectTab(key: string) {
-    tabs.forEach((tab) => tab.setAttribute('aria-selected', String(tab.dataset.tab === key)));
+  function selectTab(key: string, moveFocus = false) {
+    tabs.forEach((tab) => {
+      const on = tab.dataset.tab === key;
+      tab.setAttribute('aria-selected', String(on));
+      tab.tabIndex = on ? 0 : -1;
+      if (on && moveFocus) tab.focus({ preventScroll: true });
+    });
     Object.entries(panels).forEach(([k, panel]) => panel && (panel.hidden = k !== key));
   }
 
-  tabs.forEach((tab) => {
+  tabs.forEach((tab, i) => {
     tab.addEventListener('click', () => selectTab(tab.dataset.tab ?? 'icons'));
+
+    tab.addEventListener('keydown', (event) => {
+      const offsets: Record<string, number> = {
+        ArrowRight: i + 1,
+        ArrowLeft: i - 1,
+        Home: 0,
+        End: tabs.length - 1,
+      };
+      const target = offsets[event.key];
+      if (target === undefined) return;
+      event.preventDefault();
+      const next = tabs[(target + tabs.length) % tabs.length];
+      selectTab(next.dataset.tab ?? 'icons', true);
+    });
   });
 </script>

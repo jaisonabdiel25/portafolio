@@ -1,48 +1,78 @@
+/* Hallmark · redesign de la capa visual · 2026-07-25
+ * genre: modern-minimal · theme: propio del proyecto (índigo, tokens --c-* preservados)
+ * paper: casi negro (#0a0a0f → #020203) + grano 4 % · TEMA ÚNICO, sin modo claro
+ * hero: escenario a #050508, lámpara cónica, entrada en CSS (elemento LCP)
+ * nav: píldora flotante de cristal
+ * footer: cierre en una línea sobre filo, sin columnas ni "construido con…"
+ * contraste: AA — blanco sobre --c-accent = 5.5:1
+ * motion: UNA entrada orquestada (hero) + una respuesta al filtro de proyectos
+ * cortado en esta pasada: blobs aurora, degradado radial del body, relleno con
+ *   degradado en titulares, eyebrows 01–05, fade-up universal, flotado infinito
+ *   de iconos, cristal decorativo (12 usos → 2)
+ */
 @import 'tailwindcss';
 
-/* Modo oscuro por clase (.dark en <html>), no por preferencia del sistema. */
-@custom-variant dark (&:where(.dark, .dark *));
-
 /* ------------------------------------------------------------------ */
-/*  Tokens semánticos por tema                                         */
+/*  Tokens semánticos                                                  */
+/*                                                                     */
+/*  El sitio es OSCURO, punto. No hay toggle ni variante clara: todo el */
+/*  sistema visual (la lámpara del hero, el tubelight del nav, el       */
+/*  cristal) son efectos de luz, y la luz solo lee sobre oscuridad. El  */
+/*  modo claro era una traducción del diseño, no un diseño.            */
+/*                                                                     */
 /*  Las fuentes (--ff-*) las inyecta la API de fuentes de Astro.       */
 /* ------------------------------------------------------------------ */
 :root {
-  /* Tema CLARO (por defecto en el HTML sin clase) */
-  --c-bg-from: #eef2ff;
-  --c-bg-to: #f8fafc;
-  --c-surface: rgba(255, 255, 255, 0.6);
-  --c-surface-strong: rgba(255, 255, 255, 0.82);
-  --c-modal: rgba(255, 255, 255, 0.97);
-  --c-border: rgba(15, 23, 42, 0.1);
-  --c-fg: #0f172a;
-  --c-fg-muted: #475569;
-  --c-accent: #4f46e5;
-  --c-accent-text: #4338ca;
-  --c-accent-fg: #ffffff;
-  --c-glow: rgba(79, 70, 229, 0.25);
-  --c-blob-1: rgba(99, 102, 241, 0.35);
-  --c-blob-2: rgba(168, 85, 247, 0.28);
-  --c-blob-3: rgba(56, 189, 248, 0.3);
-}
+  color-scheme: dark;
 
-.dark {
-  /* Tema OSCURO (glassmorphism "Modern Dark Cinema") */
   --c-bg-from: #0a0a0f;
   --c-bg-to: #020203;
-  --c-surface: rgba(255, 255, 255, 0.05);
-  --c-surface-strong: rgba(255, 255, 255, 0.09);
+
+  /* Panel sólido: la elevación se expresa con luminosidad, no con sombra. */
+  --c-panel: #12121a;
+  --c-panel-hover: #191922;
+
+  /* Cristal: reservado a lo que realmente flota sobre el contenido. */
+  --c-surface: rgba(255, 255, 255, 0.06);
+  --c-surface-strong: rgba(255, 255, 255, 0.1);
   --c-modal: rgba(20, 20, 28, 0.95);
+
   --c-border: rgba(255, 255, 255, 0.1);
   --c-fg: #ededef;
   --c-fg-muted: #9aa0ab;
-  --c-accent: #6e79e0;
+
+  /* Blanco sobre --c-accent = 5.5:1 (AA). El valor anterior (#6e79e0)
+     daba 3.8:1 y fallaba en botones, filtros y pestañas activas. */
+  --c-accent: #5560c8;
   --c-accent-text: #aab0f2;
   --c-accent-fg: #ffffff;
-  --c-glow: rgba(94, 106, 210, 0.35);
-  --c-blob-1: rgba(94, 106, 210, 0.3);
-  --c-blob-2: rgba(168, 85, 247, 0.22);
-  --c-blob-3: rgba(34, 197, 94, 0.16);
+  --c-glow: rgba(85, 96, 200, 0.35);
+
+  /* Velo de los overlays modales. */
+  --c-scrim: rgba(2, 2, 3, 0.72);
+
+  /* Degradado de respaldo cuando un proyecto no tiene imagen. */
+  --c-fallback-from: color-mix(in srgb, var(--c-accent) 45%, transparent);
+  --c-fallback-to: color-mix(in srgb, var(--c-accent-text) 18%, transparent);
+
+  /* Fondo del "escenario" del hero: un punto por encima del papel de la
+     página, para que el hero se distinga sin cortar. */
+  --c-stage-bg: #050508;
+
+  /* Escala de apilamiento nombrada. Sustituye a los z-index arbitrarios
+     (`z-100`, `z-50` repetido con significados distintos). */
+  --z-raised: 10;
+  --z-sticky: 30;
+  --z-nav: 50;
+  --z-modal: 70;
+  --z-skip: 100;
+}
+
+/* Contexto "escenario": el hero de la lámpara. Se separa del papel de la
+   página por luminosidad, no por color. */
+.stage {
+  --c-bg-to: var(--c-stage-bg);
+  --c-border: rgba(255, 255, 255, 0.12);
 }
 
 /* ------------------------------------------------------------------ */
@@ -55,12 +85,15 @@
 
   --color-fg: var(--c-fg);
   --color-muted: var(--c-fg-muted);
+  --color-panel: var(--c-panel);
+  --color-panel-hover: var(--c-panel-hover);
   --color-surface: var(--c-surface);
   --color-surface-strong: var(--c-surface-strong);
   --color-edge: var(--c-border);
   --color-accent: var(--c-accent);
   --color-accent-text: var(--c-accent-text);
   --color-accent-fg: var(--c-accent-fg);
+  --color-scrim: var(--c-scrim);
 
   --ease-glass: cubic-bezier(0.16, 1, 0.3, 1);
 }
@@ -72,16 +105,16 @@ html {
   scroll-behavior: smooth;
   scroll-padding-top: 5.5rem; /* compensa la navbar fija al saltar a anclas */
   -webkit-text-size-adjust: 100%;
+  overflow-x: clip;
 }
 
 body {
   margin: 0;
   min-height: 100dvh;
+  overflow-x: clip;
   font-family: var(--ff-sans), system-ui, sans-serif;
   color: var(--c-fg);
-  background:
-    radial-gradient(1200px 600px at 50% -10%, color-mix(in srgb, var(--c-accent) 12%, transparent), transparent),
-    linear-gradient(to bottom, var(--c-bg-from), var(--c-bg-to)) fixed;
+  background: linear-gradient(to bottom, var(--c-bg-from), var(--c-bg-to)) fixed;
   background-color: var(--c-bg-to);
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -89,11 +122,25 @@ body {
   transition: color 0.3s var(--ease-glass), background-color 0.3s var(--ease-glass);
 }
 
+/* Grano sutil: sustituye a los blobs de luz ambiental. Da textura al papel
+   sin introducir una segunda fuente de color. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.04;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
 h1, h2, h3, h4, h5, h6 {
   font-family: var(--ff-display), system-ui, sans-serif;
+  font-style: normal;
   line-height: 1.1;
   letter-spacing: -0.02em;
   text-wrap: balance;
+  overflow-wrap: anywhere;
 }
 
 ::selection {
@@ -101,16 +148,46 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--c-accent-fg);
 }
 
-/* Foco visible y accesible en todos los elementos interactivos. */
+/* Foco visible y accesible en todos los elementos interactivos.
+   Sin transición: el anillo debe aparecer al instante. */
 :focus-visible {
   outline: 2px solid var(--c-accent);
   outline-offset: 3px;
   border-radius: 4px;
 }
 
+/* Salto al contenido: primer tabulador de la página. */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: var(--z-skip);
+  transform: translateY(-250%);
+  border-radius: 999px;
+  background-color: var(--c-accent);
+  color: var(--c-accent-fg);
+  padding: 0.65rem 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+.skip-link:focus-visible {
+  transform: none;
+}
+
 /* ------------------------------------------------------------------ */
 /*  Utilidades de componente reutilizables                            */
 /* ------------------------------------------------------------------ */
+
+/* Panel sólido con filo de un píxel. Es el contenedor por defecto:
+   legible, barato y sin desenfoque. */
+@utility panel {
+  background-color: var(--c-panel);
+  border: 1px solid var(--c-border);
+  border-radius: 1rem;
+}
+
+/* Cristal: SOLO para lo que flota sobre el contenido (nav fijo, menú
+   móvil). Como decoración de tarjeta no comunica nada y cuesta caro. */
 @utility glass {
   background-color: var(--c-surface);
   -webkit-backdrop-filter: blur(14px) saturate(140%);
@@ -154,71 +231,60 @@ h1, h2, h3, h4, h5, h6 {
   background-color: color-mix(in srgb, var(--c-fg) 45%, transparent);
 }
 
-/* Texto con degradado de acento. */
-@utility text-gradient {
-  background-image: linear-gradient(
-    120deg,
-    var(--c-fg) 0%,
-    var(--c-accent-text) 60%,
-    var(--c-accent) 100%
-  );
-  background-clip: text;
-  -webkit-background-clip: text;
-  color: transparent;
-}
-
 /* Glow de acento para botones primarios. */
 @utility btn-glow {
   box-shadow: 0 10px 34px -10px var(--c-glow);
 }
 
-/* Contenedor de sección con ancho y ritmo verticales consistentes. */
+/* Cifras que deben alinearse verticalmente (métricas, fechas). */
+@utility nums {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Contenedor de sección. El ritmo vertical se ajusta por sección con
+   `--pad-block` en lugar de repetir el mismo valor en las seis. */
 @utility section-shell {
   width: 100%;
   max-width: 72rem;
   margin-inline: auto;
   padding-inline: 1.25rem;
-  padding-block: 5rem;
+  padding-block: var(--pad-block, 5rem);
 }
 
 /* ------------------------------------------------------------------ */
 /*  Animaciones                                                        */
 /* ------------------------------------------------------------------ */
 
-/* Revelado al hacer scroll (lo activa un IntersectionObserver global). */
-.reveal {
-  opacity: 0;
-  transform: translateY(28px);
-  transition:
-    opacity 0.7s var(--ease-glass),
-    transform 0.7s var(--ease-glass);
-  transition-delay: var(--reveal-delay, 0ms);
-  will-change: opacity, transform;
+/* No hay revelado al hacer scroll. La página tiene UNA entrada orquestada
+   —el hero— y a partir de ahí el contenido simplemente está ahí. El
+   fade-up universal (cada sección, cada tarjeta, cada icono en cascada)
+   hacía que la página no se asentara nunca.
+   La única animación que queda responde a una acción del usuario: */
+
+/* Entrada del hero: la ÚNICA de la página. Va en CSS y no en framer-motion a
+   propósito — el titular es el elemento LCP, y animarlo desde React dejaba el
+   HTML servido con `opacity:0` hasta que hidrataba la isla. Con CSS entra en
+   el primer frame pintado, sin depender del JS. */
+@keyframes hero-rise {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
-.reveal.is-visible {
-  opacity: 1;
-  transform: none;
+.hero-rise {
+  animation: hero-rise 0.6s var(--ease-glass) both;
+  animation-delay: var(--rise-delay, 0ms);
 }
 
-/* Blobs de luz ambiental animados. */
-@keyframes blob-float {
-  0%, 100% { transform: translate(0, 0) scale(1); }
-  33% { transform: translate(6%, -8%) scale(1.08); }
-  66% { transform: translate(-5%, 5%) scale(0.95); }
-}
-.blob {
-  position: absolute;
-  border-radius: 9999px;
-  filter: blur(64px);
-  animation: blob-float 18s var(--ease-glass) infinite;
-  will-change: transform;
-}
-
-/* Entrada de tarjetas (usada por la grilla de proyectos al filtrar). */
+/* Entrada de tarjetas al cambiar de filtro en la rejilla de proyectos. */
 @keyframes card-in {
   from {
     opacity: 0;
-    transform: translateY(16px) scale(0.98);
+    transform: translateY(12px);
   }
   to {
     opacity: 1;
@@ -226,7 +292,7 @@ h1, h2, h3, h4, h5, h6 {
   }
 }
 .card-in {
-  animation: card-in 0.5s var(--ease-glass) both;
+  animation: card-in 0.4s var(--ease-glass) both;
 }
 
 /* Entrada/salida del modal de proyecto. */
@@ -241,18 +307,6 @@ h1, h2, h3, h4, h5, h6 {
 .overlay-in { animation: overlay-in 0.25s var(--ease-glass) both; }
 .dialog-in { animation: dialog-in 0.3s var(--ease-glass) both; }
 
-/* Iconos flotantes de la nube de habilidades: leve vaivén vertical. La
-   duración y el retraso se varían por icono (vars en línea) para que no
-   floten todos al mismo tiempo. */
-@keyframes tech-float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-9px); }
-}
-.tech-float {
-  animation: tech-float var(--float-dur, 6s) ease-in-out infinite;
-  animation-delay: var(--float-delay, 0s);
-}
-
 /* Respeto de prefers-reduced-motion: sin animaciones, todo visible. */
 @media (prefers-reduced-motion: reduce) {
   html {
@@ -264,12 +318,5 @@ h1, h2, h3, h4, h5, h6 {
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
-  }
-  .reveal {
-    opacity: 1;
-    transform: none;
-  }
-  .blob {
-    animation: none;
   }
 }

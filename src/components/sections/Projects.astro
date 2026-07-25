@@ -37,7 +37,10 @@ const labels = {
 };
 ---
 
-<section id="projects" class="section-shell">
-  <SectionHeading index="04" title={t('section.projects')} subtitle={t('projects.subtitle')} />
+<!-- Sección eje de la página. Comparte el ancho de las demás (72rem) para que
+     todas alineen su borde izquierdo; la jerarquía la llevan la cabecera
+     grande, el aire extra y el proyecto destacado a doble columna. -->
+<section id="projects" class="section-shell" style="--pad-block: 5.5rem 6rem;">
+  <SectionHeading title={t('section.projects')} subtitle={t('projects.subtitle')} size="lg" />
   <ProjectsGrid client:visible projects={projects} labels={labels} />
 </section>

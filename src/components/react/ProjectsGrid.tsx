@@ -44,16 +44,17 @@ const CloseIcon = () => (
   </svg>
 );
 
-/** Imagen con degradado de respaldo si el archivo no existe. */
+/** Imagen con degradado de respaldo si el archivo no existe. Los colores del
+ *  respaldo salen de los tokens (`--c-fallback-*`), no de hex sueltos. */
 function ProjectImage({ project, className }: { project: ProjectCard; className?: string }) {
   const [failed, setFailed] = useState(!project.image);
   return (
-    <div className={`relative overflow-hidden bg-surface-strong ${className ?? ''}`}>
+    <div className={`relative overflow-hidden bg-panel-hover ${className ?? ''}`}>
       <div
         className="absolute inset-0 grid place-items-center"
         style={{
           background:
-            'linear-gradient(135deg, color-mix(in srgb, var(--c-accent) 35%, transparent), color-mix(in srgb, #a855f7 30%, transparent))',
+            'linear-gradient(135deg, var(--c-fallback-from), var(--c-fallback-to))',
         }}
         aria-hidden="true"
       >
@@ -77,6 +78,9 @@ export default function ProjectsGrid({ projects, labels }: Props) {
   const [selected, setSelected] = useState<ProjectCard | null>(null);
   const closeRef = useRef<HTMLButtonElement>(null);
   const dialogRef = useRef<HTMLDivElement>(null);
+  /** Elemento que abrió el modal: al cerrar hay que devolverle el foco, o el
+   *  usuario de teclado queda tirado al inicio del documento. */
+  const openerRef = useRef<HTMLElement | null>(null);
 
   // Categorías únicas, en orden de aparición.
   const categories = useMemo(() => {
@@ -90,12 +94,18 @@ export default function ProjectsGrid({ projects, labels }: Props) {
     [active, projects]
   );
 
-  // Cierre del modal: bloqueo de scroll, foco y tecla Escape.
+  function openProject(project: ProjectCard) {
+    openerRef.current = document.activeElement as HTMLElement | null;
+    setSelected(project);
+  }
+
+  // Modal: bloqueo de scroll, foco atrapado, Escape y restauración del foco.
   useEffect(() => {
     if (!selected) return;
     const prev = document.body.style.overflow;
     document.body.style.overflow = 'hidden';
     closeRef.current?.focus();
+
     const onKey = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
         setSelected(null);
@@ -119,9 +129,11 @@ export default function ProjectsGrid({ projects, labels }: Props) {
       }
     };
     document.addEventListener('keydown', onKey);
+
     return () => {
       document.body.style.overflow = prev;
       document.removeEventListener('keydown', onKey);
+      openerRef.current?.focus();
     };
   }, [selected]);
 
@@ -130,7 +142,7 @@ export default function ProjectsGrid({ projects, labels }: Props) {
   return (
     <div>
       {/* Filtros */}
-      <div className="reveal mb-8 flex flex-wrap gap-2">
+      <div className="mb-10 flex flex-wrap gap-2">
         <FilterButton active={active === 'all'} onClick={() => setActive('all')}>
           {labels.all}
         </FilterButton>
@@ -141,98 +153,124 @@ export default function ProjectsGrid({ projects, labels }: Props) {
         ))}
       </div>
 
-      {/* Grilla */}
+      {/* Rejilla. Los proyectos destacados ocupan DOS columnas con imagen
+          apaisada: el flag `featured` cambia el peso en la página, no solo
+          pinta una etiqueta minúscula. */}
       {filtered.length === 0 ? (
         <p className="py-12 text-center text-muted">{labels.empty}</p>
       ) : (
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {filtered.map((project, i) => (
-            <article
-              key={project.id}
-              className="card-in group glass flex flex-col overflow-hidden rounded-2xl transition-transform duration-300 hover:-translate-y-1"
-              style={{ animationDelay: `${i * 60}ms` }}
-            >
-              <button
-                type="button"
-                onClick={() => setSelected(project)}
-                aria-label={`${labels.details}: ${project.title}`}
-                className="block cursor-pointer text-left"
+        <div className="grid gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-3">
+          {filtered.map((project, i) => {
+            const isFeatured = Boolean(project.featured);
+            return (
+              <article
+                key={project.id}
+                className={`card-in group panel flex flex-col overflow-hidden transition-transform duration-300 hover:-translate-y-1 ${
+                  isFeatured ? 'sm:col-span-2' : ''
+                }`}
+                style={{ animationDelay: `${i * 60}ms` }}
               >
-                <ProjectImage project={project} className="aspect-16/10" />
-              </button>
+                <button
+                  type="button"
+                  onClick={() => openProject(project)}
+                  aria-label={`${labels.details}: ${project.title}`}
+                  className="block cursor-pointer text-left"
+                >
+                  <ProjectImage
+                    project={project}
+                    className={isFeatured ? 'aspect-16/7' : 'aspect-16/10'}
+                  />
+                </button>
 
-              <div className="flex flex-1 flex-col p-5">
-                <div className="mb-2 flex items-center justify-between gap-2">
-                  <h3 className="font-display text-lg font-semibold text-fg">{project.title}</h3>
-                  {project.featured && (
-                    <span className="shrink-0 rounded-full bg-accent/15 px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-wide text-accent-text">
-                      {labels.featured}
-                    </span>
-                  )}
-                </div>
-
-                <p className="mb-4 line-clamp-3 flex-1 text-sm text-muted">{project.description}</p>
-
-                <ul className="mb-4 flex flex-wrap gap-1.5">
-                  {project.tags.map((tag) => (
-                    <li
-                      key={tag}
-                      className="rounded-full bg-surface-strong px-2 py-0.5 font-mono text-[0.7rem] text-muted"
+                <div className="flex flex-1 flex-col p-5">
+                  <div className="mb-2 flex items-center justify-between gap-2">
+                    <h3
+                      className={`font-display font-semibold text-fg ${
+                        isFeatured ? 'text-xl sm:text-2xl' : 'text-lg'
+                      }`}
                     >
-                      {tag}
-                    </li>
-                  ))}
-                </ul>
+                      {project.title}
+                    </h3>
+                    {isFeatured && (
+                      <span className="shrink-0 rounded-full border border-edge px-2 py-0.5 font-mono text-[0.65rem] uppercase tracking-wide text-accent-text">
+                        {labels.featured}
+                      </span>
+                    )}
+                  </div>
 
-                <div className="mt-auto flex items-center gap-3 text-sm">
-                  <button
-                    type="button"
-                    onClick={() => setSelected(project)}
-                    className="inline-flex cursor-pointer items-center gap-1.5 font-medium text-accent-text hover:underline"
+                  <p
+                    className={`mb-4 flex-1 text-sm text-muted ${
+                      isFeatured ? 'max-w-2xl line-clamp-4' : 'line-clamp-3'
+                    }`}
                   >
-                    {labels.details}
-                  </button>
-                  {project.repo && (
-                    <a
-                      href={project.repo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="ml-auto inline-flex items-center gap-1.5 text-muted transition-colors hover:text-fg"
+                    {project.description}
+                  </p>
+
+                  <ul className="mb-4 flex flex-wrap gap-1.5">
+                    {project.tags.map((tag) => (
+                      <li
+                        key={tag}
+                        className="rounded-full border border-edge px-2 py-0.5 font-mono text-[0.7rem] text-muted"
+                      >
+                        {tag}
+                      </li>
+                    ))}
+                  </ul>
+
+                  <div className="mt-auto flex items-center gap-3 text-sm">
+                    <button
+                      type="button"
+                      onClick={() => openProject(project)}
+                      className="inline-flex cursor-pointer items-center gap-1.5 whitespace-nowrap font-medium text-accent-text hover:underline"
                     >
-                      <CodeIcon /> {labels.viewRepo}
-                    </a>
-                  )}
-                  {project.demo && (
-                    <a
-                      href={project.demo}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 text-muted transition-colors hover:text-fg"
-                    >
-                      <ExternalIcon /> {labels.viewDemo}
-                    </a>
-                  )}
+                      {labels.details}
+                    </button>
+                    {project.repo && (
+                      <a
+                        href={project.repo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ml-auto inline-flex items-center gap-1.5 whitespace-nowrap text-muted transition-colors hover:text-fg"
+                      >
+                        <CodeIcon /> {labels.viewRepo}
+                      </a>
+                    )}
+                    {project.demo && (
+                      <a
+                        href={project.demo}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 whitespace-nowrap text-muted transition-colors hover:text-fg"
+                      >
+                        <ExternalIcon /> {labels.viewDemo}
+                      </a>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+              </article>
+            );
+          })}
         </div>
       )}
 
       {/* Modal de detalle */}
       {selected && (
-        <div
-          className="overlay-in fixed inset-0 z-100 flex items-center justify-center p-4"
-          role="dialog"
-          aria-modal="true"
-          aria-labelledby="project-modal-title"
-          onClick={() => setSelected(null)}
-        >
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" aria-hidden="true" />
+        <div className="overlay-in fixed inset-0 z-(--z-modal) flex items-center justify-center p-4">
+          {/* El velo es el elemento que cierra al pulsar fuera; el diálogo ya
+              no necesita frenar la propagación del clic. */}
+          <button
+            type="button"
+            tabIndex={-1}
+            aria-hidden="true"
+            onClick={() => setSelected(null)}
+            className="absolute inset-0 cursor-default bg-scrim backdrop-blur-sm"
+          />
           <div
             ref={dialogRef}
-            className="dialog-in modal-panel relative z-10 max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl"
-            onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="project-modal-title"
+            className="dialog-in modal-panel relative z-(--z-raised) max-h-[90dvh] w-full max-w-2xl overflow-y-auto rounded-2xl"
           >
             <ProjectImage project={selected} className="h-44 rounded-t-2xl sm:h-56" />
             <button
@@ -240,16 +278,13 @@ export default function ProjectsGrid({ projects, labels }: Props) {
               type="button"
               onClick={() => setSelected(null)}
               aria-label={labels.close}
-              className="absolute right-3 top-3 grid size-10 cursor-pointer place-items-center rounded-full bg-black/40 text-white transition-colors hover:bg-black/60"
+              className="absolute right-3 top-3 grid size-10 cursor-pointer place-items-center rounded-full bg-scrim text-white transition-colors hover:bg-fg/40"
             >
               <CloseIcon />
             </button>
 
             <div className="p-6">
-              <h3
-                id="project-modal-title"
-                className="font-display text-2xl font-bold text-fg"
-              >
+              <h3 id="project-modal-title" className="font-display text-2xl font-bold text-fg">
                 {selected.title}
               </h3>
               <p className="mt-3 leading-relaxed text-muted">
@@ -260,7 +295,7 @@ export default function ProjectsGrid({ projects, labels }: Props) {
                 {selected.tags.map((tag) => (
                   <li
                     key={tag}
-                    className="rounded-full bg-surface-strong px-2.5 py-1 font-mono text-xs text-muted"
+                    className="rounded-full border border-edge px-2.5 py-1 font-mono text-xs text-muted"
                   >
                     {tag}
                   </li>
@@ -274,7 +309,7 @@ export default function ProjectsGrid({ projects, labels }: Props) {
                       href={selected.repo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="glass inline-flex items-center gap-2 rounded-full px-4 py-2.5 text-sm font-semibold text-fg transition-colors hover:bg-surface-strong"
+                      className="inline-flex items-center gap-2 whitespace-nowrap rounded-full border border-edge px-4 py-2.5 text-sm font-semibold text-fg transition-colors hover:bg-panel-hover"
                     >
                       <CodeIcon /> {labels.viewRepo}
                     </a>
@@ -284,7 +319,7 @@ export default function ProjectsGrid({ projects, labels }: Props) {
                       href={selected.demo}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="btn-glow inline-flex items-center gap-2 rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
+                      className="btn-glow inline-flex items-center gap-2 whitespace-nowrap rounded-full bg-accent px-4 py-2.5 text-sm font-semibold text-accent-fg transition-transform hover:-translate-y-0.5"
                     >
                       <ExternalIcon /> {labels.viewDemo}
                     </a>
@@ -313,10 +348,10 @@ function FilterButton({
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      className={`cursor-pointer rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
+      className={`cursor-pointer whitespace-nowrap rounded-full border px-4 py-2 text-sm font-medium transition-colors ${
         active
           ? 'border-transparent bg-accent text-accent-fg'
-          : 'border-edge text-muted hover:bg-surface-strong hover:text-fg'
+          : 'border-edge text-muted hover:bg-panel-hover hover:text-fg'
       }`}
     >
       {children}

@@ -9,7 +9,6 @@ export const languages: Record<Lang, string> = {
 
 export const ui = {
   es: {
-    'nav.home': 'Inicio',
     'nav.about': 'Sobre mí',
     'nav.skills': 'Habilidades',
     'nav.experience': 'Experiencia',
@@ -27,15 +26,15 @@ export const ui = {
     'section.projects': 'Proyectos',
     'section.contact': 'Contacto',
 
-    'skills.subtitle': 'Tecnologías y herramientas con las que trabajo',
+    // Los subtítulos son funcionales: dicen qué hacer, no repiten el título.
+    'skills.subtitle': 'Cambia a la vista de lista para ver el detalle por categoría.',
     'skills.tab.icons': 'Iconos',
     'skills.tab.list': 'Lista',
+    'skills.level': 'Nivel de dominio',
 
     'experience.now': 'Actual',
-    'experience.type.work': 'Trabajo',
-    'experience.type.education': 'Formación',
 
-    'projects.subtitle': 'Una selección de cosas que he construido',
+    'projects.subtitle': 'Filtra por categoría o abre cualquiera para ver el detalle.',
     'projects.filter.all': 'Todos',
     'projects.featured': 'Destacado',
     'projects.viewRepo': 'Código',
@@ -48,13 +47,11 @@ export const ui = {
     'contact.copied': '¡Copiado!',
     'contact.write': 'Escríbeme',
 
-    'theme.toggle': 'Cambiar tema',
     'lang.switch': 'Cambiar idioma',
+    'a11y.skip': 'Saltar al contenido',
     'footer.rights': 'Todos los derechos reservados.',
-    'footer.builtWith': 'Construido con Astro, React y Tailwind.',
   },
   en: {
-    'nav.home': 'Home',
     'nav.about': 'About',
     'nav.skills': 'Skills',
     'nav.experience': 'Experience',
@@ -72,15 +69,14 @@ export const ui = {
     'section.projects': 'Projects',
     'section.contact': 'Contact',
 
-    'skills.subtitle': 'Technologies and tools I work with',
+    'skills.subtitle': 'Switch to the list view for the breakdown by category.',
     'skills.tab.icons': 'Icons',
     'skills.tab.list': 'List',
+    'skills.level': 'Proficiency',
 
     'experience.now': 'Present',
-    'experience.type.work': 'Work',
-    'experience.type.education': 'Education',
 
-    'projects.subtitle': 'A selection of things I have built',
+    'projects.subtitle': 'Filter by category, or open any one for the detail.',
     'projects.filter.all': 'All',
     'projects.featured': 'Featured',
     'projects.viewRepo': 'Code',
@@ -93,10 +89,9 @@ export const ui = {
     'contact.copied': 'Copied!',
     'contact.write': 'Write me',
 
-    'theme.toggle': 'Toggle theme',
     'lang.switch': 'Switch language',
+    'a11y.skip': 'Skip to content',
     'footer.rights': 'All rights reserved.',
-    'footer.builtWith': 'Built with Astro, React and Tailwind.',
   },
 } as const;
 

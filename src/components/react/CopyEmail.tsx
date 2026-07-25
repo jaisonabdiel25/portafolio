@@ -37,7 +37,7 @@ export default function CopyEmail({ email, copyLabel, copiedLabel }: Props) {
       type="button"
       onClick={copy}
       aria-label={copyLabel}
-      className="inline-flex cursor-pointer items-center gap-2 rounded-full border border-edge px-4 py-2.5 text-sm font-medium text-fg transition-colors hover:bg-surface-strong"
+      className="inline-flex cursor-pointer items-center gap-2 whitespace-nowrap rounded-full border border-edge px-5 py-3 text-sm font-semibold text-fg transition-colors hover:bg-panel-hover"
     >
       {copied ? (
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

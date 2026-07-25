@@ -49,8 +49,8 @@ export default function TubelightNav({ links }: Props) {
             <a
               href={`#${link.id}`}
               onClick={() => setActive(link.id)}
-              aria-current={isActive}
-              className={`relative block rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+              aria-current={isActive ? 'true' : undefined}
+              className={`relative block whitespace-nowrap rounded-full px-3 py-2 text-sm font-medium transition-colors ${
                 isActive ? 'text-fg' : 'text-muted hover:text-fg'
               }`}
             >

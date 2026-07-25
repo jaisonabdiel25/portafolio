@@ -13,32 +13,32 @@ const { name, socials } = portfolio.profile;
 const year = new Date().getFullYear();
 ---
 
-<footer class="section-shell !py-10">
+<!-- Cierre en una línea, sin tarjeta y sin "Construido con X, Y y Z": el
+     stack ya está en la sección de habilidades y en los propios proyectos. -->
+<footer class="section-shell" style="--pad-block: 0 2.5rem;">
   <div
-    class="glass flex flex-col items-center justify-between gap-4 rounded-2xl px-6 py-6 text-center sm:flex-row sm:text-left"
+    class="flex flex-col items-start justify-between gap-4 border-t border-edge pt-6 sm:flex-row sm:items-center"
   >
-    <div>
-      <p class="font-display text-sm font-semibold text-fg">{name}</p>
-      <p class="mt-1 text-xs text-muted">
-        © {year} {name}. {t('footer.rights')}
-      </p>
-    </div>
+    <p class="nums text-xs text-muted">
+      © {year} {name}. {t('footer.rights')}
+    </p>
 
-    <div class="flex items-center gap-2">
+    <ul class="flex items-center gap-1">
       {
         socials.map((social) => (
-          <a
-            href={social.url}
-            target={social.platform === 'email' ? undefined : '_blank'}
-            rel="noopener noreferrer"
-            aria-label={social.label ?? social.platform}
-            class="grid size-10 place-items-center rounded-full border border-edge text-muted transition-colors hover:bg-surface-strong hover:text-fg"
-          >
-            <Icon name={social.platform} size={18} />
-          </a>
+          <li>
+            <a
+              href={social.url}
+              target={social.platform === 'email' ? undefined : '_blank'}
+              rel="noopener noreferrer"
+              aria-label={social.label ?? social.platform}
+              class="grid size-10 place-items-center rounded-full text-muted transition-colors hover:bg-panel-hover hover:text-fg"
+            >
+              <Icon name={social.platform} size={18} />
+            </a>
+          </li>
         ))
       }
-    </div>
+    </ul>
   </div>
-  <p class="mt-4 text-center font-mono text-xs text-muted">{t('footer.builtWith')}</p>
 </footer>

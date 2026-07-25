@@ -1,16 +1,31 @@
 ---
-// Encabezado de sección consistente: número + título + subtítulo opcional.
+// Encabezado de sección.
+//
+// Sin numeración: los eyebrows (`01`, `02`…) son un dispositivo ORDINAL y
+// estas secciones no lo son — "Sobre mí" no va antes de "Proyectos" por
+// ninguna razón. Cuando todo está numerado, nada tiene jerarquía.
+//
+// `size` diferencia las cabeceras entre sí para que la página no sea una
+// lista de listas etiquetadas idénticas.
 interface Props {
-  index: string;
   title: string;
   subtitle?: string;
+  /** `lg` para la sección eje de la página (Proyectos); `md` por defecto. */
+  size?: 'md' | 'lg';
+  /** Regla de acento bajo el título. Desactívala para variar el ritmo. */
+  rule?: boolean;
+  class?: string;
 }
-const { index, title, subtitle } = Astro.props;
+const { title, subtitle, size = 'md', rule = true, class: className = '' } = Astro.props;
+
+const titleClass =
+  size === 'lg'
+    ? 'font-display text-4xl font-bold tracking-tight text-fg sm:text-6xl'
+    : 'font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl';
 ---
 
-<div class="reveal mb-10 flex flex-col gap-3">
-  <span class="font-mono text-sm font-medium text-accent-text">{index}</span>
-  <h2 class="font-display text-3xl font-bold tracking-tight text-fg sm:text-4xl">{title}</h2>
+<div class:list={['flex flex-col gap-3', size === 'lg' ? 'mb-12' : 'mb-10', className]}>
+  <h2 class={titleClass}>{title}</h2>
   {subtitle && <p class="max-w-2xl text-muted">{subtitle}</p>}
-  <span class="h-px w-16 bg-accent"></span>
+  {rule && <span class="h-px w-16 bg-accent"></span>}
 </div>

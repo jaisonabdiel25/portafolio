@@ -10,16 +10,25 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = useTranslations(lang);
-const { name, role } = portfolio.profile;
+const { name, role, tagline } = portfolio.profile;
 ---
 
 <section id="home" class="relative">
-  <LampHero client:load name={name} role={loc(role, lang)} />
+  <LampHero
+    client:load
+    name={name}
+    role={loc(role, lang)}
+    tagline={loc(tagline, lang)}
+    ctaProjects={t('hero.cta.projects')}
+    ctaContact={t('hero.cta.contact')}
+  />
 
-  <!-- Difuminado de empalme: continúa el color del Hero y se desvanece sobre
-       el inicio de la siguiente sección para suavizar el corte. -->
+  <!-- Empalme: el escenario es siempre oscuro, así que la transición hacia el
+       papel de la página se hace con un telón degradado que funciona en ambos
+       temas. Mide 8rem y cae sobre el padding superior de #about (9rem), que
+       está dimensionado para que el telón se apague antes del titular. -->
   <div
-    class="pointer-events-none absolute inset-x-0 bottom-0 z-40 h-32 translate-y-full bg-[linear-gradient(to_bottom,var(--c-bg-to),transparent)]"
+    class="pointer-events-none absolute inset-x-0 bottom-0 z-(--z-sticky) h-32 translate-y-full bg-[linear-gradient(to_bottom,var(--c-stage-bg),transparent)]"
     aria-hidden="true"
   >
   </div>
@@ -27,10 +36,10 @@ const { name, role } = portfolio.profile;
   <!-- Indicador de scroll -->
   <a
     href="#about"
-    class="absolute inset-x-0 bottom-6 z-50 mx-auto flex w-fit flex-col items-center gap-1 text-muted transition-colors hover:text-fg"
+    class="absolute inset-x-0 bottom-6 z-(--z-sticky) mx-auto flex w-fit flex-col items-center gap-1 text-muted transition-colors hover:text-fg"
     aria-label={t('hero.scroll')}
   >
     <span class="font-mono text-[0.65rem] uppercase tracking-widest">{t('hero.scroll')}</span>
-    <Icon name="chevron-down" size={18} class="animate-bounce" />
+    <Icon name="chevron-down" size={18} />
   </a>
 </section>

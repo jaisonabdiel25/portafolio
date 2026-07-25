@@ -12,28 +12,28 @@ const t = useTranslations(lang);
 const { paragraphs, highlights } = portfolio.about;
 ---
 
-<section id="about" class="section-shell">
-  <SectionHeading index="01" title={t('section.about')} />
+<!-- Sección comprimida a propósito: es la introducción, no el plato fuerte.
+     El padding superior (9rem) deja pasar el telón del hero, que mide 8rem. -->
+<section id="about" class="section-shell" style="--pad-block: 9rem 3.5rem;">
+  <SectionHeading title={t('section.about')} />
 
-  <div class="grid gap-8 md:grid-cols-[1.5fr_1fr]">
+  <div class="grid gap-10 md:grid-cols-[1.6fr_1fr] md:gap-14">
     <!-- Texto -->
-    <div class="reveal space-y-4 text-base leading-relaxed text-muted sm:text-lg">
+    <div class="space-y-4 text-base leading-relaxed text-muted sm:text-lg">
       {paragraphs.map((p) => <p>{loc(p, lang)}</p>)}
     </div>
 
-    <!-- Highlights -->
-    <div class="grid grid-cols-2 gap-4 md:grid-cols-1">
+    <!-- Cifras destacadas. Sin tarjeta: una lista con filo superior pesa
+         menos y lee mejor que cuatro rectángulos de cristal. -->
+    <dl class="grid grid-cols-2 gap-x-6 md:grid-cols-1 md:gap-x-0">
       {
-        highlights.map((h, i) => (
-          <div
-            class="reveal glass flex flex-col gap-1 rounded-2xl p-5"
-            style={`--reveal-delay: ${i * 90}ms;`}
-          >
-            <span class="font-display text-3xl font-bold text-gradient sm:text-4xl">{h.value}</span>
-            <span class="text-sm text-muted">{loc(h.label, lang)}</span>
+        highlights.map((h) => (
+          <div class="border-t border-edge py-4">
+            <dt class="text-sm text-muted">{loc(h.label, lang)}</dt>
+            <dd class="nums mt-1 font-display text-3xl font-bold text-fg sm:text-4xl">{h.value}</dd>
           </div>
         ))
       }
-    </div>
+    </dl>
   </div>
 </section>

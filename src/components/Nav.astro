@@ -1,5 +1,4 @@
 ---
-import ThemeToggle from './react/ThemeToggle.tsx';
 import TubelightNav from './react/TubelightNav.tsx';
 import LanguageSwitcher from './LanguageSwitcher.astro';
 import { portfolio } from '../data/portfolio';
@@ -30,7 +29,7 @@ const initials = portfolio.profile.name
   .toUpperCase();
 ---
 
-<header class="fixed inset-x-0 top-0 z-50">
+<header class="fixed inset-x-0 top-0 z-(--z-nav)">
   <nav
     class="glass mx-auto mt-3 flex max-w-6xl items-center justify-between gap-3 rounded-full px-4 py-2 sm:px-5"
     aria-label="Principal"
@@ -54,7 +53,6 @@ const initials = portfolio.profile.name
     <!-- Controles -->
     <div class="flex items-center gap-2">
       <LanguageSwitcher />
-      <ThemeToggle client:load label={t('theme.toggle')} />
       <!-- Botón de menú móvil -->
       <button
         type="button"
@@ -114,7 +112,7 @@ const initials = portfolio.profile.name
             <a
               href={`#${link.id}`}
               data-mobile-link
-              class="block rounded-xl px-4 py-3 text-base font-medium text-fg transition-colors hover:bg-surface-strong"
+              class="block whitespace-nowrap rounded-xl px-4 py-3 text-base font-medium text-fg transition-colors hover:bg-surface-strong"
             >
               {link.label}
             </a>
